@@ -6,7 +6,7 @@
 
 | 项目 | 状态 | 说明 | 入口 |
 | --- | --- | --- | --- |
-| [OPC Methodology 研读台](./opc-methodology-study/) | 第 01 个项目 | 面向《OPC Methodology》的章节导读、方法论分析、Skills 梳理与个人学习记录 | [项目说明](./opc-methodology-study/README.md) · [上游资料](https://github.com/easychen/opc-methodology) · [在线研读站](https://yydshly-opc-study.yydshly.chatgpt.site)（仅本人可访问） |
+| [OPC Methodology 研读台](./opc-methodology-study/) | 第 01 个项目 | 面向《OPC Methodology》的章节导读、方法论分析、Skills 梳理与个人学习记录 | [项目说明](./opc-methodology-study/README.md) · [上游资料](https://github.com/easychen/opc-methodology) · [在线研读站](https://yydshly.github.io/0805_githubcode_study/opc-methodology-study/) |
 
 ## 研究项目约定
 
@@ -22,3 +22,13 @@
 这个项目不是对原书的全文复制，而是把开源书的章节、创业框架与 Skills 工作流转化为可阅读、可筛选、可反思的个人研读界面。它服务于一个具体问题：**这本书的观点是什么、适用条件是什么、我能如何据此开始一个可验证的行动。**
 
 后续项目会继续沿用“来源 → 分析 → 可用成果”的结构，但每个项目保持自己的研究目标与表达方式。
+
+## 多项目发布配置
+
+GitHub Pages 的项目清单由 [projects.config.json](./projects.config.json) 统一管理。新增一个可发布研究项目时：
+
+1. 建立项目目录及其 `site/` 成品页面。
+2. 在 `projects.config.json` 增加该项目的名称、说明、资料链接、项目目录和 `site/` 路径。
+3. 推送到 `main`；GitHub Pages 会自动更新总站，并生成该项目的独立访问路径。
+
+这样可以保持总仓库只有一个发布入口，同时让每个研究项目保有独立页面与来源说明。

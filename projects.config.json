@@ -1,0 +1,17 @@
+{
+  "title": "0805 · 研究项目库",
+  "description": "一个持续扩展的个人研究项目库：保留来源、记录分析，并将研究沉淀为可直接使用的成果。",
+  "repositoryUrl": "https://github.com/yydshly/0805_githubcode_study",
+  "projects": [
+    {
+      "slug": "opc-methodology-study",
+      "order": 1,
+      "status": "已发布",
+      "title": "OPC Methodology 研读台",
+      "summary": "围绕《OPC Methodology》梳理章节、创业框架与 Skills 工作流，并把阅读转化为可追问、可反思的个人研读过程。",
+      "siteDirectory": "opc-methodology-study/site",
+      "repositoryDirectory": "opc-methodology-study",
+      "upstreamUrl": "https://github.com/easychen/opc-methodology"
+    }
+  ]
+}

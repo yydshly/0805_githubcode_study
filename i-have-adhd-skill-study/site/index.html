@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="i-have-adhd Skill 交互式研究站：从入口、基础分析、例外路由到输出塑形，完整理解它的作用、原理与参考价值。" />
+    <title>i-have-adhd · Skill 回答编排研究站</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回页面顶部">
+        <span class="brand-mark" aria-hidden="true">ih</span>
+        <span><strong>Output Lab</strong><small>Skill Research · 06</small></span>
+      </a>
+      <nav aria-label="主导航">
+        <a href="#pipeline">流程</a>
+        <a href="#rules">规则</a>
+        <a href="#full-skill">中文版</a>
+        <a href="#exceptions">例外</a>
+        <a href="#tokens">Token</a>
+        <a href="#verdict">结论</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button" id="themeToggle" type="button" aria-label="切换深浅主题" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/><circle cx="12" cy="12" r="4"/></svg>
+        </button>
+        <a class="source-link" href="https://github.com/ayghri/i-have-adhd" target="_blank" rel="noreferrer">上游仓库 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span>Agent Skill · Output policy</p>
+          <h1>它不替模型想答案，<br /><em>它替答案排顺序。</em></h1>
+          <p class="hero-lede">用户输入保持不变，宿主模型照常分析；这份 Skill 只追加一套回答策略，控制什么先说、说多少，以及下一步如何落地。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#pipeline">进入流程实验台 <span aria-hidden="true">→</span></a>
+            <a class="button button-quiet" href="#rules">查看 10 条规则</a>
+          </div>
+          <ul class="hero-facts" aria-label="核心事实">
+            <li><strong>0</strong><span>次用户 Prompt 改写</span></li>
+            <li><strong>1</strong><span>个宿主大模型</span></li>
+            <li><strong>10</strong><span>条输出塑形规则</span></li>
+            <li><strong>6</strong><span>类例外分支</span></li>
+          </ul>
+        </div>
+
+        <div class="hero-diagram" aria-label="用户问题和 Skill 规则共同进入宿主模型，生成经过塑形的回答">
+          <article class="diagram-input diagram-panel">
+            <span class="diagram-label">USER INPUT</span>
+            <p>“登录接口返回 401，怎么排查？”</p>
+            <small>原样进入，不被改写</small>
+          </article>
+          <div class="diagram-plus" aria-hidden="true">+</div>
+          <article class="diagram-policy diagram-panel">
+            <span class="diagram-label">SKILL POLICY</span>
+            <ol>
+              <li>行动放第一行</li>
+              <li>多步骤编号</li>
+              <li>抑制支线</li>
+            </ol>
+          </article>
+          <div class="diagram-arrow arrow-one" aria-hidden="true"><span></span></div>
+          <article class="diagram-model">
+            <div class="model-core"><span>同一个</span><strong>LLM</strong><small>分析 + 生成</small></div>
+          </article>
+          <div class="diagram-arrow arrow-two" aria-hidden="true"><span></span></div>
+          <article class="diagram-output diagram-panel">
+            <span class="diagram-label">SHAPED OUTPUT</span>
+            <p><b>先检查失败请求的 Authorization 请求头。</b></p>
+            <small>答案内容来自模型，顺序受到 Skill 约束</small>
+          </article>
+        </div>
+      </section>
+
+      <section class="definition-strip" aria-label="项目定义">
+        <p><span>不是</span>Prompt 优化器</p>
+        <p><span>不是</span>第二个分析模型</p>
+        <p><span>而是</span>声明式输出策略</p>
+        <p><span>依赖</span>模型的指令遵循</p>
+      </section>
+
+      <section class="section pipeline-section" id="pipeline">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span></span>Execution trace</p><h2>从入口到回答，五步看懂</h2></div>
+          <p>选择一个任务，再逐步点击流程。右侧只显示这一阶段新增的作用，避免把宿主能力误算成 Skill 能力。</p>
+        </div>
+
+        <div class="scenario-picker" role="group" aria-label="选择任务样例">
+          <button class="scenario-button is-active" type="button" data-scenario="debug" aria-pressed="true"><span>01</span><strong>排错任务</strong><small>走默认路径</small></button>
+          <button class="scenario-button" type="button" data-scenario="explain" aria-pressed="false"><span>02</span><strong>详细解释</strong><small>触发解释例外</small></button>
+          <button class="scenario-button" type="button" data-scenario="danger" aria-pressed="false"><span>03</span><strong>危险操作</strong><small>安全优先</small></button>
+          <button class="scenario-button" type="button" data-scenario="ambiguous" aria-pressed="false"><span>04</span><strong>真实歧义</strong><small>只问一个问题</small></button>
+        </div>
+
+        <div class="pipeline-shell">
+          <div class="stage-rail" role="tablist" aria-label="Skill 执行阶段">
+            <button id="stage-tab-0" class="stage-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="stagePanel" tabindex="0" data-stage="0"><span>1</span><b>入口</b><small>加载规则</small></button>
+            <button id="stage-tab-1" class="stage-tab" type="button" role="tab" aria-selected="false" aria-controls="stagePanel" tabindex="-1" data-stage="1"><span>2</span><b>基础分析</b><small>模型思考</small></button>
+            <button id="stage-tab-2" class="stage-tab" type="button" role="tab" aria-selected="false" aria-controls="stagePanel" tabindex="-1" data-stage="2"><span>3</span><b>例外判断</b><small>选择分支</small></button>
+            <button id="stage-tab-3" class="stage-tab" type="button" role="tab" aria-selected="false" aria-controls="stagePanel" tabindex="-1" data-stage="3"><span>4</span><b>输出塑形</b><small>排序压缩</small></button>
+            <button id="stage-tab-4" class="stage-tab" type="button" role="tab" aria-selected="false" aria-controls="stagePanel" tabindex="-1" data-stage="4"><span>5</span><b>发送前检查</b><small>删除噪声</small></button>
+          </div>
+
+          <div class="pipeline-content">
+            <article class="stage-panel" id="stagePanel" role="tabpanel" aria-labelledby="stage-tab-0" tabindex="0">
+              <div class="panel-index" id="stageIndex">01 / 05</div>
+              <p class="panel-kicker" id="stageKicker">ACTIVATION</p>
+              <h3 id="stageTitle">入口只负责加载规则</h3>
+              <p class="stage-summary" id="stageSummary">用户显式调用或宿主根据描述激活 Skill，随后把 SKILL.md 正文加入当前上下文。</p>
+              <div class="stage-columns">
+                <div><span class="micro-label">这一阶段做什么</span><ul id="stageDoes"></ul></div>
+                <div><span class="micro-label">这一阶段不做什么</span><ul id="stageDoesNot"></ul></div>
+              </div>
+              <div class="stage-callout"><span id="stageCalloutLabel">当前结果</span><strong id="stageCallout">规则已进入上下文，用户问题还没有被修改。</strong></div>
+              <div class="panel-controls">
+                <button class="text-button" id="stagePrev" type="button" disabled><span aria-hidden="true">←</span> 上一步</button>
+                <button class="button button-primary" id="stageNext" type="button">下一步：基础分析 <span aria-hidden="true">→</span></button>
+              </div>
+            </article>
+
+            <aside class="trace-panel" aria-live="polite">
+              <div class="trace-heading"><div><span class="live-dot"></span> LIVE TRACE</div><small id="scenarioBranch">默认路径</small></div>
+              <div class="trace-block">
+                <span class="micro-label">用户输入 · 未改写</span>
+                <p id="traceInput">登录接口返回 401，怎么排查？</p>
+              </div>
+              <div class="trace-block">
+                <span class="micro-label">基础模型得到的分析</span>
+                <ul id="traceAnalysis"></ul>
+              </div>
+              <div class="trace-route">
+                <span class="micro-label">例外路由</span>
+                <strong id="traceRoute">尚未判断</strong>
+              </div>
+              <div class="trace-block trace-output">
+                <span class="micro-label">当前可见输出</span>
+                <div id="traceOutput">Skill 已加载，等待模型处理用户任务。</div>
+              </div>
+              <div class="trace-rules" id="traceRules" aria-label="当前已应用规则"></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section comparison-section" aria-labelledby="comparisonTitle">
+        <div class="section-heading compact-heading">
+          <div><p class="eyebrow"><span></span>Before / after</p><h2 id="comparisonTitle">它改变的是表达，不是事实来源</h2></div>
+          <p>下面两段使用同一份假设分析。右侧没有获得更多知识，只做了优先级、步骤和结尾重组。</p>
+        </div>
+        <div class="comparison-grid">
+          <article class="answer-card answer-before">
+            <div class="answer-head"><span>普通回答草稿</span><small id="beforeCount">约 96 字</small></div>
+            <blockquote id="beforeAnswer">这个问题通常可能涉及多个部分，包括认证中间件、Token 校验、Cookie 设置和请求头。建议你先检查一下相关配置，也可以查看后端日志，并确认依赖版本是否存在问题。如果需要的话，还可以进一步检查数据库里的会话状态。</blockquote>
+            <div class="answer-notes"><span>背景先行</span><span>支线较多</span><span>下一步不唯一</span></div>
+          </article>
+          <article class="answer-card answer-after">
+            <div class="answer-head"><span>Skill 塑形后</span><small id="afterCount">约 82 字</small></div>
+            <blockquote id="afterAnswer">先打开失败请求，检查 Authorization 请求头。
+
+1. 打开浏览器开发者工具
+2. 重新执行登录
+3. 选择返回 401 的请求
+
+下一步：确认请求头是否包含 Bearer Token。</blockquote>
+            <div class="answer-notes accent" id="afterNotes"><span>行动置顶</span><span>步骤编号</span><span>唯一下一步</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section rules-section" id="rules">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span></span>Rule microscope</p><h2>十条规则，不只是“简短”</h2></div>
+          <p>每条规则解决不同的执行阻力。选择规则查看其触发时机、具体作用和正反例。</p>
+        </div>
+
+        <div class="rules-workbench">
+          <div class="rule-list" role="tablist" aria-label="十条 Skill 规则">
+            <button class="rule-button is-active" id="rule-tab-0" role="tab" aria-selected="true" aria-controls="rulePanel" tabindex="0" data-rule="0"><span>01</span><b>下一步置顶</b><small>启动行动</small></button>
+            <button class="rule-button" id="rule-tab-1" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="1"><span>02</span><b>多步骤编号</b><small>降低切换负担</small></button>
+            <button class="rule-button" id="rule-tab-2" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="2"><span>03</span><b>只留一个下一步</b><small>缩短启动距离</small></button>
+            <button class="rule-button" id="rule-tab-3" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="3"><span>04</span><b>抑制支线</b><small>保持当前方向</small></button>
+            <button class="rule-button" id="rule-tab-4" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="4"><span>05</span><b>每轮重述状态</b><small>降低记忆负担</small></button>
+            <button class="rule-button" id="rule-tab-5" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="5"><span>06</span><b>具体时间估计</b><small>减少时间模糊</small></button>
+            <button class="rule-button" id="rule-tab-6" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="6"><span>07</span><b>让成果可见</b><small>显示完成反馈</small></button>
+            <button class="rule-button" id="rule-tab-7" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="7"><span>08</span><b>错误平实表达</b><small>位置 · 原因 · 修复</small></button>
+            <button class="rule-button" id="rule-tab-8" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="8"><span>09</span><b>列表最多五项</b><small>限制认知单元</small></button>
+            <button class="rule-button" id="rule-tab-9" role="tab" aria-selected="false" aria-controls="rulePanel" tabindex="-1" data-rule="9"><span>10</span><b>删除前言和客套</b><small>压缩无效输出</small></button>
+          </div>
+
+          <article class="rule-panel" id="rulePanel" role="tabpanel" aria-labelledby="rule-tab-0" tabindex="0">
+            <div class="rule-number" id="ruleNumber">RULE 01</div>
+            <h3 id="ruleTitle">第一行直接给下一步</h3>
+            <p class="rule-purpose" id="rulePurpose">先降低“从知道到开始”的摩擦，再补充必要背景。</p>
+            <dl class="rule-meta">
+              <div><dt>触发条件</dt><dd id="ruleTrigger">回答中存在明确可执行动作</dd></div>
+              <div><dt>改变对象</dt><dd id="ruleTarget">答案顺序，不是业务结论</dd></div>
+              <div><dt>潜在代价</dt><dd id="ruleRisk">可能把必要背景推得太后</dd></div>
+            </dl>
+            <div class="micro-comparison">
+              <div><span>Before</span><p id="ruleBad">“你的认证流程有几个组成部分……”</p></div>
+              <div><span>After</span><p id="ruleGood">“先检查失败请求的 Authorization 请求头。”</p></div>
+            </div>
+            <div class="rule-interpretation"><span>研究解释</span><p id="ruleInterpretation">这是排序约束：模型仍可保留背景，但必须先暴露最小有用动作。</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section full-skill-section" id="full-skill">
+        <div class="section-heading full-skill-heading">
+          <div><p class="eyebrow"><span></span>Complete Chinese edition</p><h2>完整中文版 Skill</h2></div>
+          <div class="full-skill-intro">
+            <p>以下内容完整保留上游 Skill 的持续模式、五条设计依据、十条规则、六类例外和发送前检查。它是研究性中文翻译，不构成医学诊断或治疗建议。</p>
+            <div class="full-skill-actions">
+              <button class="button button-primary" id="copySkill" type="button">复制中文版</button>
+              <a class="button button-quiet" href="./i-have-adhd.zh-CN.md" download>下载 Markdown <span aria-hidden="true">↓</span></a>
+              <span id="copyStatus" class="copy-status" role="status" aria-live="polite"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="full-skill-shell">
+          <aside class="skill-toc" aria-label="中文版 Skill 目录">
+            <p>内容目录</p>
+            <nav>
+              <a href="#skill-persistence">持续生效</a>
+              <a href="#skill-reading">ADHD 与阅读</a>
+              <a href="#skill-rules">十条规则</a>
+              <a href="#skill-exceptions">例外情况</a>
+              <a href="#skill-presend">发送前检查</a>
+            </nav>
+            <div class="skill-integrity">
+              <span>完整性检查</span>
+              <strong><i>5</i> 条依据</strong>
+              <strong><i>10</i> 条规则</strong>
+              <strong><i>6</i> 类例外</strong>
+              <strong><i>5</i> 项检查</strong>
+            </div>
+          </aside>
+          <article class="skill-document" id="skillDocument" aria-live="polite">
+            <p class="skill-loading">正在载入完整中文 Skill……</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section exception-section" id="exceptions">
+        <div class="section-heading">
+          <div><p class="eyebrow light"><span></span>Exception router</p><h2>先判断能不能直接行动</h2></div>
+          <p>例外规则防止“越短越好、立刻行动”伤害完整性、安全性和正确性。</p>
+        </div>
+        <div class="exception-flow" aria-label="六类例外分支">
+          <article><span>01</span><h3>要求解释</h3><p>允许完整展开，用标题保持可扫描，不为了短而删除原理。</p><small>完整性优先</small></article>
+          <article><span>02</span><h3>危险操作</h3><p>删除、覆盖、迁移等操作先确认目标、影响和恢复条件。</p><small>安全优先</small></article>
+          <article><span>03</span><h3>调试循环</h3><p>连续三次仍失败时停止继续猜，指出可能错误的前提。</p><small>诊断优先</small></article>
+          <article><span>04</span><h3>真实歧义</h3><p>两个方向会产生实质不同结果时，只问一个关键问题。</p><small>方向优先</small></article>
+          <article><span>05</span><h3>规则伤害任务</h3><p>比较、研究和方案评估需要多个选项时，保留完整答案。</p><small>任务优先</small></article>
+          <article><span>06</span><h3>宿主规则冲突</h3><p>系统、安全和工具调用要求高于这套输出风格。</p><small>上层规则优先</small></article>
+        </div>
+      </section>
+
+      <section class="section token-section" id="tokens">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span></span>Token ledger</p><h2>“省 Token”要算总账</h2></div>
+          <p>Skill 会增加输入 Token，同时可能减少输出和重复沟通。拖动参数，看不同任务下是否真的净节省。</p>
+        </div>
+
+        <div class="token-lab">
+          <form class="token-controls" id="tokenForm">
+            <label for="skillTokens"><span>Skill 规则输入</span><output id="skillTokensValue">1,200 tokens</output><input id="skillTokens" type="range" min="200" max="2400" step="100" value="1200" /></label>
+            <label for="normalTokens"><span>普通回答输出</span><output id="normalTokensValue">900 tokens</output><input id="normalTokens" type="range" min="100" max="2400" step="100" value="900" /></label>
+            <label for="shapedTokens"><span>塑形后回答输出</span><output id="shapedTokensValue">350 tokens</output><input id="shapedTokens" type="range" min="50" max="1600" step="50" value="350" /></label>
+            <label for="avoidedTurns"><span>减少的重复问答</span><output id="avoidedTurnsValue">1 轮</output><input id="avoidedTurns" type="range" min="0" max="3" step="1" value="1" /></label>
+          </form>
+          <div class="token-result" aria-live="polite">
+            <p class="panel-kicker">ESTIMATED LEDGER</p>
+            <div class="token-bars" aria-label="Token 用量对比">
+              <div><span>不使用 Skill</span><div class="bar-track"><i id="normalBar"></i></div><strong id="normalTotal">1,800</strong></div>
+              <div><span>使用 Skill</span><div class="bar-track"><i id="skillBar"></i></div><strong id="skillTotal">1,550</strong></div>
+            </div>
+            <div class="token-verdict is-saving" id="tokenVerdict"><span>当前假设</span><strong>预计节省 250 tokens</strong><p>输出缩短并减少一轮重复沟通，覆盖了规则输入开销。</p></div>
+            <small class="token-disclaimer">这是结构演示，不是仓库基准测试；实际计费还受缓存、上下文长度、平台定价和后续输入影响。</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="section verdict-section" id="verdict">
+        <div class="verdict-lead">
+          <p class="eyebrow"><span></span>Research verdict</p>
+          <h2>可参考的是 Skill 写法，<br />不是新的模型算法。</h2>
+          <p>它把一个抽象目标——“让回答更容易行动”——拆成可观察规则、正反例、例外路由和发送前检查。这套结构可以迁移到教学、客服、排错和无障碍输出模式。</p>
+        </div>
+        <div class="verdict-grid">
+          <article class="value-card value-high"><span>高</span><h3>Skill 设计参考</h3><p>目标具体，规则可观察，配有例外与检查表，适合用作输出策略模板。</p></article>
+          <article class="value-card value-medium"><span>中</span><h3>Token 优化价值</h3><p>可能减少输出与往返，但缺少基准测试，短任务可能因规则输入而增耗。</p></article>
+          <article class="value-card value-low"><span>低</span><h3>底层技术创新</h3><p>没有新模型、微调、RAG、状态机或确定性验证器，核心仍是提示词工程。</p></article>
+        </div>
+        <div class="boundary-grid">
+          <article><h3>它能够</h3><ul><li>调整信息优先级与答案顺序</li><li>切分步骤并控制一次展示量</li><li>让进度、错误和完成结果更显眼</li><li>通过例外规则保护安全与完整性</li></ul></article>
+          <article><h3>它不能保证</h3><ul><li>基础分析一定正确</li><li>模型每次都严格遵守十条规则</li><li>时间估计和 Token 节省准确</li><li>具备医学上的 ADHD 干预效果</li></ul></article>
+        </div>
+      </section>
+
+      <section class="source-section" aria-labelledby="sourceTitle">
+        <div><p class="eyebrow"><span></span>Source boundary</p><h2 id="sourceTitle">事实来自上游，解释来自本研究</h2></div>
+        <div class="source-links">
+          <a href="https://github.com/ayghri/i-have-adhd/blob/main/skills/i-have-adhd/SKILL.md" target="_blank" rel="noreferrer"><span>核心规则</span><strong>SKILL.md</strong><i aria-hidden="true">↗</i></a>
+          <a href="https://github.com/ayghri/i-have-adhd/blob/main/README.md" target="_blank" rel="noreferrer"><span>项目定义</span><strong>README.md</strong><i aria-hidden="true">↗</i></a>
+          <a href="https://github.com/ayghri/i-have-adhd/blob/main/INSTALL.md" target="_blank" rel="noreferrer"><span>激活差异</span><strong>INSTALL.md</strong><i aria-hidden="true">↗</i></a>
+        </div>
+        <p class="source-note">本页中的流程分层、Token 计算和能力评价属于研究解释；上游没有实现第二模型、Token 测试或程序化规则校验。</p>
+      </section>
+    </main>
+
+    <footer>
+      <div><strong>i-have-adhd Skill Research</strong><span>0805 GitHub Code Study · Project 06</span></div>
+      <p>研究快照：<code>0047e0d</code> · 上游采用 MIT License</p>
+    </footer>
+  </body>
+</html>

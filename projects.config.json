@@ -43,6 +43,16 @@
       "siteDirectory": "storybook-generator-skill-study/site",
       "repositoryDirectory": "storybook-generator-skill-study",
       "upstreamUrl": "https://github.com/weaiw/storybook-generator-skill"
+    },
+    {
+      "slug": "i-have-adhd-skill-study",
+      "order": 6,
+      "status": "暂时归档",
+      "title": "i-have-adhd Skill 回答编排研究站",
+      "summary": "已完成入口、输出塑形、例外路由与 Token 研究。结论是现代模型和成熟 Agent 通常已隐含这些能力，完整 Skill 的增量意义有限；保留展示页与中文翻译，暂时归档。",
+      "siteDirectory": "i-have-adhd-skill-study/site",
+      "repositoryDirectory": "i-have-adhd-skill-study",
+      "upstreamUrl": "https://github.com/ayghri/i-have-adhd"
     }
   ]
 }

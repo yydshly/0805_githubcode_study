@@ -15,6 +15,7 @@
 | [Graphify × pi 架构学习工作台](./graphify-study/) | 第 03 个项目 · 学习报告可用 | 以 Graphify 作为代码图谱导航工具，以 pi 作为目标源码库，研究 Agent 分层、运行循环、状态记忆和自研边界 | [项目说明](./graphify-study/README.md) · [在线学习站](https://yydshly.github.io/0805_githubcode_study/graphify-study/) · [Graphify](https://github.com/Graphify-Labs/graphify) · [pi](https://github.com/earendil-works/pi) |
 | [QuerySplat 待研究记录](./querysplat-study/) | 第 04 个项目 · 待研究 | 记录多视角图片生成 3DGS 的核心原理、视觉几何大模型、环境与许可门槛；当前不下载源码，后期由真实需求触发验证 | [待研究说明](./querysplat-study/README.md) · [上游仓库](https://github.com/inspatio/querysplat) · [论文](https://arxiv.org/abs/2608.01186) |
 | [Storybook Generator Skill 研究站](./storybook-generator-skill-study/) | 第 05 个项目 · 研究样机可用 | 拆解儿童绘本 Skill 的故事结构、角色圣经、图文契约、逐页生图与 QA，并用交互式模拟器呈现软一致性能力和模型级边界 | [项目说明](./storybook-generator-skill-study/README.md) · [在线研究站](https://yydshly.github.io/0805_githubcode_study/storybook-generator-skill-study/) · [上游资料](https://github.com/weaiw/storybook-generator-skill) |
+| [i-have-adhd Skill 回答编排研究站](./i-have-adhd-skill-study/) | 第 06 个项目 · 暂时归档 | 已完成作用、原理、Token 和参考价值研究；结论是现代模型与成熟 Agent 通常已隐含这些能力，完整 Skill 的增量意义有限。保留展示页与中文翻译作为 Skill 写法案例 | [项目说明](./i-have-adhd-skill-study/README.md) · [在线研究站](https://yydshly.github.io/0805_githubcode_study/i-have-adhd-skill-study/) · [上游资料](https://github.com/ayghri/i-have-adhd) |
 
 ## 研究项目约定
 

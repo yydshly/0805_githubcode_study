@@ -1,0 +1,119 @@
+{
+  "graphify": {
+    "version": "0.9.33",
+    "commit": "4e7e6b1f7e0df10ed07d5f28f9189bbde42940f1",
+    "python": "3.10.11",
+    "install": "editable source install with core dependencies and tree-sitter-sql"
+  },
+  "subject": {
+    "name": "earendil-works/pi",
+    "branch": "main",
+    "commit": "f909da2bf0e39ebeca9b2608f511d4167435360e"
+  },
+  "runs": [
+    {
+      "id": "initial-core",
+      "label": "首次全量构建",
+      "mode": "code-only",
+      "elapsedSeconds": 76.06,
+      "files": 1153,
+      "nodes": 12127,
+      "edges": 32791,
+      "communities": 382,
+      "note": "发现 1 个 SQL 文件缺少可选解析器。"
+    },
+    {
+      "id": "incremental-after-sql",
+      "label": "补装 SQL 后增量",
+      "mode": "incremental",
+      "elapsedSeconds": 6.5,
+      "files": 1153,
+      "nodes": 12123,
+      "edges": 32791,
+      "communities": 424,
+      "note": "0 个文件重提取；新增解析器未触发 SQL 重建。"
+    },
+    {
+      "id": "force-with-sql",
+      "label": "补装 SQL 后强制全量",
+      "mode": "force",
+      "elapsedSeconds": 43.67,
+      "files": 1153,
+      "nodes": 12139,
+      "edges": 32802,
+      "communities": 403,
+      "note": "SQL 解析补回 16 个节点与 11 条边。"
+    },
+    {
+      "id": "incremental-stability-1",
+      "label": "无变更增量 1",
+      "mode": "incremental",
+      "elapsedSeconds": 5.91,
+      "files": 1153,
+      "nodes": 12135,
+      "edges": 32802,
+      "communities": 395,
+      "note": "结构稳定，但较全量少 4 个去重节点。"
+    },
+    {
+      "id": "incremental-stability-2",
+      "label": "无变更增量 2",
+      "mode": "incremental",
+      "elapsedSeconds": 6.01,
+      "files": 1153,
+      "nodes": 12135,
+      "edges": 32802,
+      "communities": 398,
+      "hashStable": false,
+      "note": "节点和边不变，社区数与 graph.json 哈希仍变化。"
+    },
+    {
+      "id": "final-cluster",
+      "label": "pi 上下文最终聚类",
+      "mode": "cluster-only",
+      "elapsedSeconds": 6.24,
+      "files": 1153,
+      "nodes": 12135,
+      "edges": 32802,
+      "communities": 397,
+      "note": "从 pi 仓库上下文运行，最终来源提交记录正确。"
+    }
+  ],
+  "queryCases": [
+    {
+      "id": "explain-agent-session",
+      "status": "useful",
+      "question": "解释 AgentSession",
+      "result": "准确定位 packages/coding-agent/src/core/agent-session.ts:L305，并列出 SettingsManager、SessionManager、ExtensionRunner、Agent 等直接关系。",
+      "verdict": "具体符号查询有效，适合模块入口定位。"
+    },
+    {
+      "id": "path-extension-runner",
+      "status": "useful",
+      "question": "AgentSession 到 ExtensionRunner 的路径",
+      "result": "返回 1 跳 EXTRACTED references 关系，同时提示目标匹配存在歧义。",
+      "verdict": "路径证据清晰，但名称歧义仍需人工确认。"
+    },
+    {
+      "id": "generic-agent-tool-state",
+      "status": "noisy",
+      "question": "agent tool state",
+      "result": "起点落在测试文件 state()、package.json 关键词和 Tool 类型，未直接回答运行时工具调用链。",
+      "verdict": "宽泛自然语言查询噪声高，需要先知道领域符号或增加语义扩展。"
+    },
+    {
+      "id": "affected-settings-manager",
+      "status": "risk",
+      "question": "SettingsManager 的一层影响范围",
+      "result": "CLI 返回 No unique node match，未能选择同名候选。",
+      "verdict": "影响分析依赖唯一符号解析；高频类名可能阻断工作流。"
+    },
+    {
+      "id": "cluster-provenance",
+      "status": "risk",
+      "question": "图谱来源提交是否正确",
+      "result": "从父仓库运行 cluster-only 时记录父仓库 63fe3b23；从 pi 上下文重跑后修正为 f909da2b。",
+      "verdict": "执行目录会影响来源元数据，复现实验必须固定 cwd。"
+    }
+  ]
+}

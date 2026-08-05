@@ -22,6 +22,17 @@
       "siteDirectory": "awesome-gpt-image-2-study/site",
       "repositoryDirectory": "awesome-gpt-image-2-study",
       "upstreamUrl": "https://github.com/freestylefly/awesome-gpt-image-2"
+    },
+    {
+      "slug": "graphify-study",
+      "order": 3,
+      "status": "学习报告可用",
+      "title": "Graphify × pi 架构学习工作台",
+      "summary": "以 Graphify 作为代码图谱导航工具，以 pi 作为研究目标，通过源码核验和交互式报告理解 Agent 架构与自研边界。",
+      "siteDirectory": "graphify-study/site",
+      "repositoryDirectory": "graphify-study",
+      "upstreamUrl": "https://github.com/Graphify-Labs/graphify",
+      "researchTargetUrl": "https://github.com/earendil-works/pi"
     }
   ]
 }

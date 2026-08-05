@@ -12,6 +12,7 @@
 | --- | --- | --- | --- |
 | [OPC Methodology 研读台](./opc-methodology-study/) | 第 01 个项目 | 面向《OPC Methodology》的章节导读、方法论分析、Skills 梳理与个人学习记录 | [项目说明](./opc-methodology-study/README.md) · [上游资料](https://github.com/easychen/opc-methodology) · [在线研读站](https://yydshly.github.io/0805_githubcode_study/opc-methodology-study/) |
 | [Awesome GPT Image 2 研究](./awesome-gpt-image-2-study/) | 第 02 个项目 · 研究演示 | 拆解案例库、结构化 Prompt、Agent Skill 与在线生图产品，验证其可控性和跨模型迁移价值 | [项目说明](./awesome-gpt-image-2-study/README.md) · [在线研究站](https://yydshly.github.io/0805_githubcode_study/awesome-gpt-image-2-study/) · [上游资料](https://github.com/freestylefly/awesome-gpt-image-2) |
+| [Graphify × pi 架构学习工作台](./graphify-study/) | 第 03 个项目 · 学习报告可用 | 以 Graphify 作为代码图谱导航工具，以 pi 作为目标源码库，研究 Agent 分层、运行循环、状态记忆和自研边界 | [项目说明](./graphify-study/README.md) · [在线学习站](https://yydshly.github.io/0805_githubcode_study/graphify-study/) · [Graphify](https://github.com/Graphify-Labs/graphify) · [pi](https://github.com/earendil-works/pi) |
 
 ## 研究项目约定
 
@@ -33,7 +34,7 @@
 GitHub Pages 的项目清单由 [projects.config.json](./projects.config.json) 统一管理。新增一个可发布研究项目时：
 
 1. 建立项目目录及其 `site/` 成品页面。
-2. 在 `projects.config.json` 增加该项目的名称、说明、资料链接、项目目录和 `site/` 路径。
+2. 在 `projects.config.json` 增加该项目的名称、说明、资料链接、项目目录和 `site/` 路径；若研究工具与目标库不同，可额外设置 `researchTargetUrl`。
 3. 推送到 `main`；GitHub Pages 会自动更新总站，并生成该项目的独立访问路径。
 
 这样可以保持总仓库只有一个发布入口，同时让每个研究项目保有独立页面与来源说明。

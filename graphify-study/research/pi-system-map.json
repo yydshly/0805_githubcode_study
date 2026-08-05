@@ -1,0 +1,220 @@
+{
+  "meta": {
+    "title": "pi 全景架构地图",
+    "commit": "f909da2bf0e39ebeca9b2608f511d4167435360e",
+    "packageCount": 9,
+    "sourceFileCount": 504,
+    "layerCount": 10,
+    "scope": "覆盖全部正式 package、主要产品子系统、当前主链与 AgentHarness v2 演进线"
+  },
+  "layers": [
+    {
+      "id": "surface",
+      "number": "01",
+      "name": "产品入口与运行模式",
+      "position": "最上层",
+      "summary": "用户或其他程序进入 pi 的所有入口。coding-agent 把同一个 AgentSession 暴露为交互终端、一次性输出、JSON 事件、RPC 和 SDK。",
+      "controlFlow": "CLI 参数 → main() → 选择运行模式 → 创建 AgentSessionRuntime",
+      "packages": ["coding-agent"],
+      "modules": [
+        {"name":"CLI / main","role":"解析参数、项目信任、会话选择、模型与资源预检，再分派运行模式。","source":"packages/coding-agent/src/main.ts","status":"主路径"},
+        {"name":"InteractiveMode","role":"完整终端产品：编辑器、消息、选择器、命令、队列、扩展 UI 与状态栏。","source":"packages/coding-agent/src/modes/interactive/interactive-mode.ts","status":"主路径"},
+        {"name":"Print / JSON mode","role":"非交互执行；把相同 AgentSession 输出为文本或结构化事件。","source":"packages/coding-agent/src/modes/print-mode.ts","status":"稳定"},
+        {"name":"RPC mode","role":"通过 stdin/stdout 的 LF 分隔 JSONL 命令控制本地会话。","source":"packages/coding-agent/src/modes/rpc/rpc-mode.ts","status":"稳定"},
+        {"name":"SDK","role":"程序化创建 AgentSession、自定义模型、工具、资源和内存会话。","source":"packages/coding-agent/src/core/sdk.ts","status":"稳定"},
+        {"name":"Experimental remote CLI","role":"实验性 client/server/pi 命令，连接新的远程协议栈。","source":"packages/coding-agent/src/cli/experimental","status":"实验"}
+      ]
+    },
+    {
+      "id": "composition",
+      "number": "02",
+      "name": "运行时组装与生命周期",
+      "position": "产品装配层",
+      "summary": "把 cwd 相关服务、会话对象和运行模式组合起来，并在 new、resume、fork、import 或 cwd 变化时替换整套运行时。",
+      "controlFlow": "create services → resolve session inputs → create AgentSession → bind mode",
+      "packages": ["coding-agent"],
+      "modules": [
+        {"name":"AgentSessionRuntime","role":"持有当前 session 与服务；负责 new/resume/fork/import 和运行时替换。","source":"packages/coding-agent/src/core/agent-session-runtime.ts","status":"主路径"},
+        {"name":"AgentSessionServices","role":"创建 cwd 绑定的 ModelRuntime、SettingsManager、ResourceLoader 和诊断。","source":"packages/coding-agent/src/core/agent-session-services.ts","status":"主路径"},
+        {"name":"createAgentSession","role":"选择模型与 thinking level，恢复历史，组装 Agent、工具、扩展与 AgentSession。","source":"packages/coding-agent/src/core/sdk.ts:L169","status":"主路径"},
+        {"name":"AgentSession","role":"所有运行模式共享的产品编排边界；管理 prompt、事件、队列、压缩、重试和持久化。","source":"packages/coding-agent/src/core/agent-session.ts","status":"核心"}
+      ]
+    },
+    {
+      "id": "services",
+      "number": "03",
+      "name": "产品服务与策略",
+      "position": "coding-agent 核心层",
+      "summary": "这些服务不直接运行模型，但决定模型、凭据、设置、资源、扩展、项目安全和会话如何被组织。",
+      "controlFlow": "settings/resources/auth → AgentSession policy → runtime behavior",
+      "packages": ["coding-agent"],
+      "modules": [
+        {"name":"ModelRuntime","role":"coding-agent 的模型、Provider、认证、刷新和 streamSimple 门面。","source":"packages/coding-agent/src/core/model-runtime.ts:L128","status":"核心"},
+        {"name":"SessionManager","role":"当前 CLI 的追加式 JSONL 会话树、分支、标签、模型变化与上下文构建。","source":"packages/coding-agent/src/core/session-manager.ts:L855","status":"主路径"},
+        {"name":"SettingsManager","role":"合并全局与项目 settings，提供模型、主题、队列、压缩、重试等策略。","source":"packages/coding-agent/src/core/settings-manager.ts:L279","status":"核心"},
+        {"name":"DefaultResourceLoader","role":"发现并加载 AGENTS、SYSTEM、skills、prompts、themes、extensions 和 pi packages。","source":"packages/coding-agent/src/core/resource-loader.ts:L195","status":"核心"},
+        {"name":"ExtensionRunner","role":"在输入、上下文、模型请求、工具、会话和 UI 边界运行扩展钩子。","source":"packages/coding-agent/src/core/extensions/runner.ts:L268","status":"核心"},
+        {"name":"PackageManager","role":"安装、解析、启用和更新 npm/git pi packages。","source":"packages/coding-agent/src/core/package-manager.ts","status":"扩展基础设施"},
+        {"name":"TrustManager","role":"保存项目目录信任决策，限制项目设置、资源与扩展的加载。","source":"packages/coding-agent/src/core/trust-manager.ts","status":"安全边界"},
+        {"name":"EventBus / telemetry","role":"承载扩展和 UI 之外的状态通知、计时、使用量与诊断。","source":"packages/coding-agent/src/core/event-bus.ts","status":"支持"}
+      ]
+    },
+    {
+      "id": "agent",
+      "number": "04",
+      "name": "Agent 运行时",
+      "position": "执行核心",
+      "summary": "与产品 UI 解耦的状态机。Agent 保存当前状态，agent-loop 执行模型—工具—模型循环并发出稳定事件。",
+      "controlFlow": "prompt → AgentContext → stream model → execute tools → append results → next turn",
+      "packages": ["agent"],
+      "modules": [
+        {"name":"Agent","role":"保存 system prompt、model、thinking、tools、messages、streaming 与队列状态。","source":"packages/agent/src/agent.ts:L173","status":"稳定核心"},
+        {"name":"agent-loop","role":"规范化 prompt，调用模型，校验并行/串行工具，处理 steering/follow-up 和结束条件。","source":"packages/agent/src/agent-loop.ts:L95","status":"稳定核心"},
+        {"name":"AgentMessage / events","role":"定义应用消息与 LLM 消息边界，以及 agent/turn/message/tool 事件序列。","source":"packages/agent/src/types.ts","status":"公共契约"},
+        {"name":"Context transform","role":"在调用模型前裁剪、注入或转换上下文，再转换为标准 LLM Message。","source":"packages/agent/src/agent-loop.ts","status":"扩展点"},
+        {"name":"AgentHarness v2","role":"面向 durable session、lanes、恢复和手动 drive 的下一代门面；多数执行方法当前仍未实现。","source":"packages/agent/src/harness/agent-harness.ts","status":"scaffold"}
+      ]
+    },
+    {
+      "id": "model",
+      "number": "05",
+      "name": "模型与 Provider 平台",
+      "position": "基础模型层",
+      "summary": "统一不同厂商的模型目录、认证、请求协议、流式事件、工具调用、推理级别、图像与成本数据。",
+      "controlFlow": "Model → Provider → API implementation → normalized stream events",
+      "packages": ["ai"],
+      "modules": [
+        {"name":"Models collection","role":"注册 Provider，查询模型，解析归属并路由 stream/complete。","source":"packages/ai/src/models.ts","status":"核心"},
+        {"name":"Provider factories","role":"每个厂商拥有模型目录、认证和 stream 行为；当前源码含 40+ provider 模块。","source":"packages/ai/src/providers","status":"核心"},
+        {"name":"API implementations","role":"实现 Anthropic、OpenAI Responses/Completions、Google、Bedrock、Mistral 等线协议。","source":"packages/ai/src/api","status":"核心"},
+        {"name":"Auth / CredentialStore","role":"合并显式凭据、存储凭据、环境变量、OAuth 和环境身份。","source":"packages/ai/src/auth","status":"安全边界"},
+        {"name":"Unified stream events","role":"把 text、thinking、toolCall、done、error 规范为跨 Provider 事件。","source":"packages/ai/src/types.ts","status":"公共契约"},
+        {"name":"Model catalogs","role":"生成并查询模型能力、context window、价格、输入类型和 reasoning 支持。","source":"packages/ai/src/models.generated.ts","status":"生成数据"},
+        {"name":"ImagesModels","role":"独立的图像生成 Provider/Model 集合，不进入 Agent 工具循环。","source":"packages/ai/src/images-models.ts","status":"独立能力"},
+        {"name":"compat / proxy utilities","role":"兼容旧 API、跨 Provider handoff、浏览器代理和上下文序列化。","source":"packages/ai/src/compat.ts","status":"兼容层"}
+      ]
+    },
+    {
+      "id": "tools",
+      "number": "06",
+      "name": "工具、扩展与资源",
+      "position": "能力扩展层",
+      "summary": "Agent 能做什么由工具决定；产品如何被改变由扩展、skills、prompts、themes 和 packages 决定。",
+      "controlFlow": "resource discovery → register tools/hooks/UI → tool preflight → execute → render result",
+      "packages": ["agent", "coding-agent"],
+      "modules": [
+        {"name":"Built-in coding tools","role":"read、bash、edit、write 为默认工具；另提供 grep、find、ls 工厂。","source":"packages/coding-agent/src/core/tools","status":"主能力"},
+        {"name":"Tool execution contracts","role":"TypeBox 参数校验、进度更新、错误转 toolResult、并行/串行策略。","source":"packages/agent/src/types.ts","status":"核心契约"},
+        {"name":"File mutation queue","role":"串行化潜在冲突的 edit/write，避免并发文件修改互相覆盖。","source":"packages/coding-agent/src/core/tools/file-mutation-queue.ts","status":"一致性"},
+        {"name":"Extension loader","role":"从用户、项目、CLI 和 package 来源发现 TypeScript 扩展。","source":"packages/coding-agent/src/core/extensions/loader.ts","status":"扩展入口"},
+        {"name":"Extension API / Runner","role":"注册工具、命令、快捷键、Provider、UI 与生命周期钩子。","source":"packages/coding-agent/src/core/extensions/types.ts","status":"公共扩展面"},
+        {"name":"Skills / prompts","role":"按需加载专用指令和可复用提示模板，注入模型上下文。","source":"packages/coding-agent/src/core/skills.ts","status":"知识资源"},
+        {"name":"Pi packages","role":"用 npm/git 打包 extensions、skills、prompts、themes 并管理启用状态。","source":"packages/coding-agent/src/core/pi-manifest.ts","status":"分发机制"},
+        {"name":"Agent harness tools","role":"agent-core 新增运行时无关的 read/bash/edit/write 工厂和 ExecutionEnv 抽象。","source":"packages/agent/src/harness/tools","status":"演进中"}
+      ]
+    },
+    {
+      "id": "memory",
+      "number": "07",
+      "name": "状态、会话与记忆",
+      "position": "横切状态层",
+      "summary": "pi 的记忆不是一个单一 Memory 类，而是运行状态、当前上下文、会话树、压缩摘要、项目知识、配置和新 durable session contract 的组合。",
+      "controlFlow": "events → append session entries → build active branch context → compact when needed → resume/fork",
+      "packages": ["agent", "coding-agent", "session-backends/sqlite-node"],
+      "modules": [
+        {"name":"AgentState","role":"进程内短期状态：messages、tools、model、thinking、streaming、pending tool calls。","source":"packages/agent/src/types.ts","status":"当前主链"},
+        {"name":"LLM Context","role":"一次模型调用实际可见的工作记忆；由 active branch、system prompt 和工具定义组成。","source":"packages/agent/src/agent-loop.ts","status":"易失"},
+        {"name":"Coding SessionManager","role":"当前 coding-agent 使用的 JSONL 追加式树，保留完整历史、分支和元数据。","source":"packages/coding-agent/src/core/session-manager.ts","status":"当前主链"},
+        {"name":"Compaction","role":"把旧消息压缩为有损摘要并保留近期尾部；完整历史仍在 session tree。","source":"packages/coding-agent/src/core/compaction","status":"当前主链"},
+        {"name":"Context files / skills","role":"AGENTS、SYSTEM、skills 和 prompts 是每次装载的项目知识/指令记忆。","source":"packages/coding-agent/src/core/resource-loader.ts","status":"外部知识"},
+        {"name":"Settings / auth","role":"跨运行保存用户偏好、项目策略和凭据引用，但不属于对话记忆。","source":"packages/coding-agent/src/core/settings-manager.ts","status":"配置状态"},
+        {"name":"Agent-core Session API","role":"Entry/Record/Lane/SessionRepo durable contract，支持分支、操作记录、恢复和统计。","source":"packages/agent/src/harness/session","status":"新架构"},
+        {"name":"SQLite backend + FTS","role":"新 SessionRepo 的持久化实现，含 migrations、materialized views、leases、facts 和可选全文搜索。","source":"packages/session-backends/sqlite-node/src/sqlite","status":"新架构"},
+        {"name":"长期语义记忆","role":"没有内建自动事实提取、embedding、跨会话召回、遗忘或用户画像策略。","source":"architecture finding","status":"缺口"}
+      ]
+    },
+    {
+      "id": "presentation",
+      "number": "08",
+      "name": "终端 UI 与交互呈现",
+      "position": "表现层",
+      "summary": "独立的 TUI 框架把组件树渲染为 ANSI 行，处理焦点、输入、overlay、布局、图像和差量更新；coding-agent 在其上构建产品组件。",
+      "controlFlow": "Agent events → coding-agent components → TUI render tree → differential terminal output",
+      "packages": ["tui", "coding-agent"],
+      "modules": [
+        {"name":"TUI interface","role":"统一 child、focus、overlay、input、lifecycle、query 和 render 能力。","source":"packages/tui/src/tui.ts","status":"核心"},
+        {"name":"Main / Alt screen","role":"主屏保留终端 scrollback；Alt screen 拥有固定 viewport 与应用滚动。","source":"packages/tui/src/tui-main-screen.ts","status":"渲染器"},
+        {"name":"Layout system","role":"VStack、HStack、ScrollView 用 basis/grow/shrink 组织终端高度和滚动区域。","source":"packages/tui/src/layout.ts","status":"布局"},
+        {"name":"Editor / Input","role":"光标、IME、选择、kill ring、undo、按键绑定和多行编辑。","source":"packages/tui/src/components/editor.ts","status":"输入核心"},
+        {"name":"Built-in components","role":"Text、Markdown、Box、Loader、SelectList、SettingsList、Image 等。","source":"packages/tui/src/components","status":"组件库"},
+        {"name":"Overlay / focus","role":"对话框、菜单、模态层的定位、可见性和焦点回退。","source":"packages/tui/src/tui.ts","status":"前景系统"},
+        {"name":"Differential rendering","role":"只重绘变化行并使用 synchronized output，减少闪烁。","source":"packages/tui/src/tui-main-screen.ts","status":"性能核心"},
+        {"name":"Coding-agent components","role":"AssistantMessage、ToolExecution、Footer、Model/Session/Settings selectors 等产品组件。","source":"packages/coding-agent/src/modes/interactive/components","status":"产品 UI"}
+      ]
+    },
+    {
+      "id": "remote",
+      "number": "09",
+      "name": "远程会话与协议",
+      "position": "实验性分布式边界",
+      "summary": "把 pi 会话从本地进程/TUI 中解耦为 transport-neutral 的 CBOR 协议、客户端 lease 和应用提供的服务器服务。",
+      "controlFlow": "ByteTransport → frame/CBOR → request/response/event → authoritative snapshot",
+      "packages": ["protocol", "client", "server"],
+      "modules": [
+        {"name":"Protocol schemas","role":"定义 hello、请求/响应、事件、session/server snapshot 和严格验证。","source":"packages/protocol/src/schemas.ts","status":"实验"},
+        {"name":"CBOR + framing","role":"4 字节长度前缀、严格 CBOR 子集、增量解码和大小限制。","source":"packages/protocol/src/framing.ts","status":"协议核心"},
+        {"name":"PiClient","role":"连接、请求关联、重连、session summary 与 authoritative snapshot。","source":"packages/client/src/client.ts","status":"实验"},
+        {"name":"SessionLease / handle","role":"shared/exclusive 所有权、attach/detach、失效和清理语义。","source":"packages/client/src/session-handle.ts","status":"并发边界"},
+        {"name":"PiServer","role":"组合 listener 与应用提供的 PiServerService；自身不提供 coding-agent 服务。","source":"packages/server/src/server.ts","status":"实验"},
+        {"name":"Protocol bridge","role":"在 pi-ai domain objects 与协议 DTO 之间做严格转换和清洗。","source":"packages/server/src/protocol.ts","status":"适配边界"},
+        {"name":"Unix transports","role":"提供 Node/Bun Unix socket transport 与 server preset。","source":"packages/client/src/unix.ts","status":"可选 transport"}
+      ]
+    },
+    {
+      "id": "quality",
+      "number": "10",
+      "name": "测试、评估与开发支撑",
+      "position": "验证底座",
+      "summary": "单元测试验证协议和状态契约，faux provider 与 virtual terminal 保证确定性；evals 用真实 AgentSession 做模型驱动行为比较。",
+      "controlFlow": "fixture/faux model → real runtime → session artifacts → assertions/judges/report",
+      "packages": ["evals", "agent", "ai", "tui", "coding-agent", "protocol", "client", "server"],
+      "modules": [
+        {"name":"Unit and conformance tests","role":"覆盖 Agent 事件、工具并发、session backend、protocol framing、client/server 生命周期。","source":"packages/*/test","status":"验证"},
+        {"name":"Faux provider","role":"无需真实 API 的确定性模型响应，用于 coding-agent 和 agent 测试。","source":"packages/ai/src/providers/faux.ts","status":"测试基础"},
+        {"name":"VirtualTerminal","role":"无真实终端地测试输入、布局和渲染。","source":"packages/tui/src/terminal.ts","status":"测试基础"},
+        {"name":"pi-evals harness","role":"在隔离目录运行真实 AgentSession，保存 JSONL artifacts，并比较 prompt/tool/skill/model。","source":"packages/evals/src/pi-harness.ts","status":"行为评估"},
+        {"name":"Examples","role":"SDK、extensions、custom providers、subagent、plan mode 等集成样例。","source":"packages/coding-agent/examples","status":"学习与集成"},
+        {"name":"Release / generated catalogs","role":"模型生成、shrinkwrap、跨 Node/Bun 发布和 lockstep versioning。","source":"scripts","status":"工程支撑"}
+      ]
+    }
+  ],
+  "packages": [
+    {"id":"coding-agent","name":"pi-coding-agent","sourceFiles":196,"role":"主产品、CLI、SDK、运行模式和产品编排","status":"主产品","dependsOn":["agent","ai","tui","client","protocol"]},
+    {"id":"agent","name":"pi-agent-core","sourceFiles":39,"role":"Agent 状态机、工具循环与新 durable harness/session contract","status":"核心 + 演进","dependsOn":["ai"]},
+    {"id":"ai","name":"pi-ai","sourceFiles":172,"role":"模型 Provider、协议适配、认证、模型目录和流式事件","status":"核心","dependsOn":[]},
+    {"id":"tui","name":"pi-tui","sourceFiles":37,"role":"终端组件、输入、布局、焦点和差量渲染","status":"核心","dependsOn":[]},
+    {"id":"protocol","name":"pi-protocol","sourceFiles":8,"role":"远程会话 schema、严格 CBOR 与 framing","status":"实验","dependsOn":[]},
+    {"id":"client","name":"pi-client","sourceFiles":10,"role":"远程连接、请求关联、session lease 与 snapshot","status":"实验","dependsOn":["protocol"]},
+    {"id":"server","name":"pi-server","sourceFiles":17,"role":"transport listener、session server 与 pi-ai 协议桥","status":"实验","dependsOn":["ai","protocol"]},
+    {"id":"sqlite","name":"pi-session-backend-sqlite-node","sourceFiles":17,"role":"新 SessionRepo 的 SQLite、migration、lease、facts 与 FTS","status":"新架构","dependsOn":["agent","ai"]},
+    {"id":"evals","name":"pi-evals","sourceFiles":8,"role":"真实 AgentSession 的行为评估、比较和 artifacts","status":"开发工具","dependsOn":["coding-agent"]}
+  ],
+  "memoryModel": [
+    {"id":"runtime","name":"运行状态","lifetime":"一次进程/运行","owner":"AgentState","contents":"model、thinking、tools、messages、streaming、pending calls","persistence":"无","source":"packages/agent/src/types.ts"},
+    {"id":"working","name":"工作记忆","lifetime":"一次模型请求","owner":"LLM Context","contents":"system prompt、active branch messages、tool definitions","persistence":"由 session 重建","source":"packages/agent/src/agent-loop.ts"},
+    {"id":"transcript","name":"会话记忆","lifetime":"跨运行","owner":"coding-agent SessionManager","contents":"完整 JSONL 树、分支、消息、模型/思考变化、标签","persistence":"JSONL 文件","source":"packages/coding-agent/src/core/session-manager.ts"},
+    {"id":"summary","name":"压缩记忆","lifetime":"context window 内","owner":"Compaction","contents":"旧历史摘要、近期尾部、文件操作信息","persistence":"compaction entry","source":"packages/coding-agent/src/core/compaction"},
+    {"id":"knowledge","name":"项目知识","lifetime":"每次 reload","owner":"ResourceLoader","contents":"AGENTS、SYSTEM、skills、prompts、extensions","persistence":"项目/用户文件","source":"packages/coding-agent/src/core/resource-loader.ts"},
+    {"id":"preference","name":"偏好与安全状态","lifetime":"跨运行","owner":"Settings/Trust/Auth","contents":"模型、主题、队列、信任、凭据","persistence":"JSON 配置/凭据存储","source":"packages/coding-agent/src/core/settings-manager.ts"},
+    {"id":"durable","name":"Durable session v2","lifetime":"跨进程与恢复","owner":"SessionRepo / Lane / Record","contents":"entries、operations、queues、usage、facts、lanes","persistence":"内存或 SQLite backend","source":"packages/agent/src/harness/session"},
+    {"id":"semantic","name":"长期语义记忆","lifetime":"跨会话","owner":"未提供","contents":"事实提取、embedding、自动召回、遗忘策略","persistence":"需要应用自行实现","source":"not implemented in core"}
+  ],
+  "architectureFindings": [
+    "当前主 CLI 仍使用 coding-agent 的 AgentSession + JSONL SessionManager；不要把 AgentHarness v2 当作已接管主链。",
+    "agent-core 已经导出新的 SessionRepo、Lane、Record、InMemory/SQLite backend contract，但 AgentHarness 的 prompt/compact/resume 等仍返回 HarnessNotImplemented。",
+    "所谓记忆由多种状态机制组成；只有 JSONL/SQLite/配置属于持久化，当前 Context 和 AgentState 都是易失状态。",
+    "pi-ai 是独立模型平台，coding-agent 的 ModelRuntime 是产品门面；两者不能合并理解为同一个模块。",
+    "RPC JSONL 与远程 CBOR protocol 是两条不同路径：前者控制本地进程，后者面向 transport-neutral 远程 session。",
+    "Graphify 能帮助发现高连接符号，但完整架构必须结合 package boundaries、exports、README、运行入口和测试契约。"
+  ]
+}

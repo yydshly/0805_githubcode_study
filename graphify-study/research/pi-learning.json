@@ -1,0 +1,418 @@
+{
+  "meta": {
+    "title": "pi 架构学习工作台",
+    "subjectCommit": "f909da2bf0e39ebeca9b2608f511d4167435360e",
+    "graphifyCommit": "4e7e6b1f7e0df10ed07d5f28f9189bbde42940f1",
+    "updatedAt": "2026-08-05",
+    "thesis": "pi 把模型适配、Agent 循环、产品编排和终端呈现拆成可组合层；Graphify 用来导航，源码用来定案。"
+  },
+  "fourObjects": [
+    {
+      "id": "pi",
+      "label": "pi 源码",
+      "role": "研究对象",
+      "description": "真正需要理解的 Agent Harness 和 coding agent monorepo。",
+      "path": "subjects/pi"
+    },
+    {
+      "id": "graphify",
+      "label": "Graphify",
+      "role": "导航工具",
+      "description": "扫描符号和关系，帮助 AI 找到候选入口，但不替代源码判断。",
+      "path": "upstream/graphify"
+    },
+    {
+      "id": "graph",
+      "label": "图谱结果",
+      "role": "机器索引",
+      "description": "12,135 个节点和 32,802 条关系，供查询和候选上下文选择。",
+      "path": "artifacts/pi/graphify-out/graph.json"
+    },
+    {
+      "id": "ai",
+      "label": "AI 研究者",
+      "role": "解释与验证",
+      "description": "用图谱定位、回到源码核验、整理架构并明确不确定性。",
+      "path": "research/pi-architecture.md"
+    }
+  ],
+  "researchSteps": [
+    {
+      "id": "question",
+      "number": "01",
+      "title": "先锁定一个问题",
+      "input": "例如：一次工具调用如何从模型输出走到执行结果？",
+      "action": "要求 AI 一次只研究一个主链，禁止直接给宽泛项目总结。",
+      "output": "研究问题、边界、完成标准",
+      "done": "问题能够用源码文件和事件顺序回答"
+    },
+    {
+      "id": "map",
+      "number": "02",
+      "title": "用图谱找入口",
+      "input": "GRAPH_REPORT、god-nodes、explain、path",
+      "action": "查询明确符号，收集可能相关的类、文件和一跳关系。",
+      "output": "候选文件清单",
+      "done": "得到 5–12 个优先阅读入口"
+    },
+    {
+      "id": "source",
+      "number": "03",
+      "title": "回到源码核验",
+      "input": "候选类和文件",
+      "action": "阅读构造、调用点、事件处理和测试；拒绝仅凭连接度下结论。",
+      "output": "带文件和行号的事实",
+      "done": "每个关键判断至少有一个源码证据"
+    },
+    {
+      "id": "trace",
+      "number": "04",
+      "title": "串成运行链路",
+      "input": "已核验的局部事实",
+      "action": "按输入、状态、模型、工具、持久化、输出的顺序连接事实。",
+      "output": "时序流程和层级图",
+      "done": "能解释数据在各层之间如何移动"
+    },
+    {
+      "id": "challenge",
+      "number": "05",
+      "title": "主动找反例",
+      "input": "架构草图和 Graphify 路径",
+      "action": "检查同名歧义、配置节点污染、实验包与主链混淆、测试反例。",
+      "output": "限制与未确认问题",
+      "done": "区分已验证、推断和未知"
+    },
+    {
+      "id": "synthesize",
+      "number": "06",
+      "title": "沉淀成可复习报告",
+      "input": "事实、流程、限制",
+      "action": "输出非技术解释、package 表、主链、源码入口和下一批问题。",
+      "output": "Web 报告与复习卡",
+      "done": "一周后仍能通过入口重新建立心智模型"
+    }
+  ],
+  "packages": [
+    {
+      "id": "ai",
+      "name": "pi-ai",
+      "layer": "模型适配层",
+      "status": "核心",
+      "summary": "统一 Provider、模型目录、认证、流式事件、工具调用与 token/cost。",
+      "dependsOn": [],
+      "why": "让上层 Agent 不必直接绑定 OpenAI、Anthropic、Google 等 SDK。",
+      "evidence": ["packages/ai/README.md", "packages/ai/src/index.ts"]
+    },
+    {
+      "id": "agent",
+      "name": "pi-agent-core",
+      "layer": "Agent 运行时",
+      "status": "核心",
+      "summary": "管理消息和工具状态，运行模型—工具—模型的多轮循环并发出事件。",
+      "dependsOn": ["ai"],
+      "why": "这是未来开发 Agent 时最值得复用的最小运行时。",
+      "evidence": ["packages/agent/src/agent.ts:L346", "packages/agent/src/agent-loop.ts:L95"]
+    },
+    {
+      "id": "coding-agent",
+      "name": "pi-coding-agent",
+      "layer": "产品编排层",
+      "status": "主产品",
+      "summary": "把 Agent、模型、会话、设置、资源、扩展、工具和四种运行模式组合为 coding agent。",
+      "dependsOn": ["agent", "ai", "tui", "client", "protocol"],
+      "why": "理解 pi 的实际产品行为，应主要阅读这个包。",
+      "evidence": ["packages/coding-agent/README.md", "packages/coding-agent/src/main.ts:L886"]
+    },
+    {
+      "id": "tui",
+      "name": "pi-tui",
+      "layer": "终端呈现层",
+      "status": "核心",
+      "summary": "提供组件、输入、焦点、overlay、图片和差量渲染。",
+      "dependsOn": [],
+      "why": "解释为什么 pi 的交互体验可以独立于 Agent loop 演进。",
+      "evidence": ["packages/tui/README.md", "packages/tui/src/tui.ts"]
+    },
+    {
+      "id": "protocol",
+      "name": "pi-protocol",
+      "layer": "远程协议层",
+      "status": "实验",
+      "summary": "定义长度前缀 CBOR 消息、schema 和会话快照语义，不绑定传输。",
+      "dependsOn": [],
+      "why": "为进程外或远程控制 pi 提供稳定消息边界。",
+      "evidence": ["packages/protocol/README.md"]
+    },
+    {
+      "id": "client",
+      "name": "pi-client",
+      "layer": "远程客户端",
+      "status": "实验",
+      "summary": "通过 ByteTransport 创建、附加和控制远程会话。",
+      "dependsOn": ["protocol"],
+      "why": "展示 Agent 产品可以从本地 TUI 解耦为远程会话。",
+      "evidence": ["packages/client/README.md"]
+    },
+    {
+      "id": "server",
+      "name": "pi-server",
+      "layer": "远程服务端",
+      "status": "实验",
+      "summary": "组合 listener 与应用提供的 PiServerService，不提供独立 coding-agent 服务。",
+      "dependsOn": ["ai", "protocol"],
+      "why": "是远程架构的服务端构件，但目前不是主 CLI 必经路径。",
+      "evidence": ["packages/server/README.md"]
+    },
+    {
+      "id": "session-backend",
+      "name": "sqlite-node",
+      "layer": "持久化适配层",
+      "status": "可选",
+      "summary": "把 agent-core 会话存储适配到 Node SQLite。",
+      "dependsOn": ["agent"],
+      "why": "说明核心会话后端可被单独替换，而非写死在 Agent 中。",
+      "evidence": ["packages/session-backends/sqlite-node/package.json"]
+    }
+  ],
+  "coreComponents": [
+    {
+      "id": "interactive",
+      "name": "InteractiveMode",
+      "role": "接收输入并把事件渲染成终端 UI",
+      "source": "packages/coding-agent/src/modes/interactive/interactive-mode.ts:L1075",
+      "relation": "presentation"
+    },
+    {
+      "id": "session",
+      "name": "AgentSession",
+      "role": "所有运行模式共享的产品编排边界",
+      "source": "packages/coding-agent/src/core/agent-session.ts:L305",
+      "relation": "orchestration"
+    },
+    {
+      "id": "agent-runtime",
+      "name": "Agent",
+      "role": "保存状态并启动 Agent loop",
+      "source": "packages/agent/src/agent.ts:L346",
+      "relation": "runtime"
+    },
+    {
+      "id": "loop",
+      "name": "agent-loop",
+      "role": "协调模型响应、工具执行和下一轮",
+      "source": "packages/agent/src/agent-loop.ts:L155",
+      "relation": "runtime"
+    },
+    {
+      "id": "model-runtime",
+      "name": "ModelRuntime",
+      "role": "模型、Provider 和认证的 coding-agent 门面",
+      "source": "packages/coding-agent/src/core/model-runtime.ts:L128",
+      "relation": "provider"
+    },
+    {
+      "id": "session-manager",
+      "name": "SessionManager",
+      "role": "以追加式 JSONL 树保存会话和分支",
+      "source": "packages/coding-agent/src/core/session-manager.ts:L855",
+      "relation": "persistence"
+    },
+    {
+      "id": "resource-loader",
+      "name": "DefaultResourceLoader",
+      "role": "加载 AGENTS、skills、prompts、extensions 和 themes",
+      "source": "packages/coding-agent/src/core/resource-loader.ts:L195",
+      "relation": "extension"
+    },
+    {
+      "id": "extension-runner",
+      "name": "ExtensionRunner",
+      "role": "在输入、消息、工具和 Provider 边界执行扩展钩子",
+      "source": "packages/coding-agent/src/core/extensions/runner.ts:L268",
+      "relation": "extension"
+    }
+  ],
+  "runtimeFlow": [
+    {
+      "id": "input",
+      "number": "01",
+      "actor": "InteractiveMode",
+      "title": "接收用户输入",
+      "description": "主循环等待编辑器提交，然后调用 AgentSession.prompt。",
+      "source": "packages/coding-agent/src/modes/interactive/interactive-mode.ts:L1075",
+      "output": "userInput"
+    },
+    {
+      "id": "preflight",
+      "number": "02",
+      "actor": "AgentSession",
+      "title": "预处理和扩展介入",
+      "description": "处理 slash command、input hook、skill/template、队列、认证和压缩。",
+      "source": "packages/coding-agent/src/core/agent-session.ts:L1116",
+      "output": "AgentMessage[] + system prompt"
+    },
+    {
+      "id": "agent",
+      "number": "03",
+      "actor": "Agent",
+      "title": "启动状态化运行",
+      "description": "规范化 prompt，建立生命周期并调用 runAgentLoop。",
+      "source": "packages/agent/src/agent.ts:L346",
+      "output": "AgentContext"
+    },
+    {
+      "id": "model",
+      "number": "04",
+      "actor": "ModelRuntime / pi-ai",
+      "title": "调用模型并统一流事件",
+      "description": "Agent loop 将消息转为 LLM Context；ModelRuntime 选择 Provider 并 streamSimple。",
+      "source": "packages/coding-agent/src/core/sdk.ts:L312",
+      "output": "text / thinking / toolCall events"
+    },
+    {
+      "id": "tool",
+      "number": "05",
+      "actor": "agent-loop",
+      "title": "校验并执行工具",
+      "description": "模型返回 tool call 时按并行或顺序策略执行，并形成 toolResult。",
+      "source": "packages/agent/src/agent-loop.ts:L411",
+      "output": "ToolResultMessage[]"
+    },
+    {
+      "id": "continue",
+      "number": "06",
+      "actor": "agent-loop",
+      "title": "把结果送回模型",
+      "description": "toolResult 写回上下文；若仍有工具或排队消息则继续下一轮。",
+      "source": "packages/agent/src/agent-loop.ts:L155",
+      "output": "下一轮或 agent_end"
+    },
+    {
+      "id": "persist",
+      "number": "07",
+      "actor": "AgentSession / SessionManager",
+      "title": "广播并持久化事件",
+      "description": "扩展和订阅者先收到事件；message_end 随后追加到 JSONL 会话树。",
+      "source": "packages/coding-agent/src/core/agent-session.ts:L610",
+      "output": "session entries"
+    },
+    {
+      "id": "render",
+      "number": "08",
+      "actor": "InteractiveMode / TUI",
+      "title": "增量更新终端界面",
+      "description": "消息、流式 delta 和工具状态映射成组件，并请求差量重绘。",
+      "source": "packages/coding-agent/src/modes/interactive/interactive-mode.ts:L3034",
+      "output": "可见响应和工具状态"
+    }
+  ],
+  "evidenceLevels": [
+    {
+      "level": "01",
+      "label": "项目文档",
+      "trust": "方向",
+      "description": "回答项目自称解决什么问题，适合建立词汇和边界。"
+    },
+    {
+      "level": "02",
+      "label": "Graphify 图谱",
+      "trust": "导航",
+      "description": "回答可能从哪里读、哪些符号相连；同名和配置节点需要警惕。"
+    },
+    {
+      "level": "03",
+      "label": "实现源码",
+      "trust": "事实",
+      "description": "调用点、状态变化和事件顺序的主要证据。"
+    },
+    {
+      "level": "04",
+      "label": "测试与运行",
+      "trust": "行为",
+      "description": "确认边界条件、并发、错误和用户可观察行为。"
+    }
+  ],
+  "reviewCards": [
+    {
+      "id": "prompt-pipeline",
+      "question": "AgentSession.prompt 在调用 Agent 前做了什么？",
+      "answer": "它依次处理扩展命令、input hook、skill/template 展开、流式队列、模型与认证校验、压缩检查和 before_agent_start，最后才把 AgentMessage[] 交给 Agent。"
+    },
+    {
+      "id": "message-persistence",
+      "question": "消息在什么时候写进 JSONL？",
+      "answer": "AgentSession 监听 AgentEvent，在 message_end 时把 user、assistant 和 toolResult 交给 SessionManager.appendMessage；custom message 走独立 entry。"
+    },
+    {
+      "id": "compaction-history",
+      "question": "压缩会删除旧消息吗？",
+      "answer": "不会。它追加 compaction entry；后续 buildContextEntries 使用摘要、保留尾部和新消息重建较短 Context，原 JSONL 历史仍在。"
+    },
+    {
+      "id": "branch-fork",
+      "question": "branch 和 fork 的区别是什么？",
+      "answer": "branch 只在同一 JSONL 树中把 leaf 移到旧节点，下一条 entry 形成新分支；fork 会创建新的 session 文件身份，并记录 parentSession。"
+    },
+    {
+      "id": "v2-maturity",
+      "question": "为什么不能直接基于 AgentHarness v2 开发当前产品？",
+      "answer": "Entry/Record/Lane、SessionRepo 和 SQLite backend 已形成，但 prompt、compact、resume、steer、createLane 等关键执行方法仍返回 HarnessNotImplemented。"
+    },
+    {
+      "id": "mental-model",
+      "question": "为什么只用四层模型仍不足以完整解释 pi？",
+      "answer": "四层只能描述主干；完整系统还包含产品入口、运行时组装、产品服务、工具与扩展、状态记忆、远程协议、持久化和评估。"
+    },
+    {
+      "id": "agent-session",
+      "question": "为什么 AgentSession 是理解 coding-agent 的入口？",
+      "answer": "它是 interactive、print、RPC 共享边界，组合 Agent、模型、工具、扩展、压缩、重试和会话持久化。"
+    },
+    {
+      "id": "tool-loop",
+      "question": "工具调用为什么会形成多轮？",
+      "answer": "模型输出 toolCall，agent-loop 执行并把 toolResult 写回 Context，然后自动再调用模型。"
+    },
+    {
+      "id": "provider",
+      "question": "Agent 为什么不绑定某个模型 SDK？",
+      "answer": "Agent 只依赖注入的 streamFn；ModelRuntime 和 pi-ai Provider 负责具体模型、认证和流式协议。"
+    },
+    {
+      "id": "events",
+      "question": "同一套运行事件被谁消费？",
+      "answer": "AgentSession 扩展钩子、SessionManager 持久化和 InteractiveMode/TUI 呈现都消费 AgentEvent。"
+    },
+    {
+      "id": "graphify-limit",
+      "question": "Graphify 在研究中能做什么、不能做什么？",
+      "answer": "能找候选符号和关系；不能替代源码验证，也不能把连接度直接解释为业务重要性。"
+    },
+    {
+      "id": "remote",
+      "question": "protocol/client/server 是当前主 CLI 的必经路径吗？",
+      "answer": "不是。它们是实验性远程会话层；本地 interactive 主链仍是 InteractiveMode + AgentSession。"
+    },
+    {
+      "id": "session-lines",
+      "question": "pi 当前为什么存在两套 session 架构？",
+      "answer": "coding-agent 的 JSONL SessionManager 是当前产品主链；agent-core 的 SessionRepo/Lane/SQLite 是正在建设的 durable v2 contract，AgentHarness 执行仍未完成。"
+    },
+    {
+      "id": "memory-types",
+      "question": "会话历史、Context 和长期语义记忆有什么区别？",
+      "answer": "会话历史保存完整事件，Context 是模型当前可见的工作记忆；长期语义记忆还需要事实提取、召回、更新和遗忘，pi core 没有内建。"
+    },
+    {
+      "id": "tui-boundary",
+      "question": "pi-tui 与 InteractiveMode 的边界是什么？",
+      "answer": "pi-tui 提供通用终端组件、输入、布局、焦点和渲染；InteractiveMode 消费 AgentSession 事件并组合这些能力成为 coding-agent 产品。"
+    },
+    {
+      "id": "evals",
+      "question": "pi-evals 验证的是什么？",
+      "answer": "它在隔离目录运行真实 AgentSession，保存原生 session artifacts，并比较 prompt、tool、skill、model 或 system prompt 的端到端行为。"
+    }
+  ],
+  "promptTemplate": "请对本地 pi 项目进行只读架构研究，不要修改源码。先读取 GRAPH_REPORT.md，用 Graphify 只查找候选符号；然后必须回到 subjects/pi 的源码和测试核验。当前只回答一个问题：[填写问题]。输出：1）非技术解释；2）调用或数据流程；3）每个结论对应的源码文件与行号；4）Graphify 提供的线索；5）仍不确定的判断；6）下一批最值得阅读的文件。不要把社区编号、连接度或 inferred 边直接当成架构事实。"
+}

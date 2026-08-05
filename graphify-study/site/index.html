@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="从 Graphify 导航到源码验证：pi 架构学习工作台">
+  <title>pi 架构学习工作台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="topbar">
+    <button class="brand" data-view="home" aria-label="返回学习入口">
+      <span class="brand-mark" aria-hidden="true">π</span>
+      <span><strong>PI Architecture</strong><small>SOURCE STUDY NOTEBOOK</small></span>
+    </button>
+    <nav aria-label="学习章节">
+      <button data-view="home" class="active"><span>01</span>入口</button>
+      <button data-view="method"><span>02</span>怎么研究</button>
+      <button data-view="architecture"><span>03</span>全景架构</button>
+      <button data-view="memory"><span>04</span>状态记忆</button>
+      <button data-view="runtime"><span>05</span>运行链路</button>
+      <button data-view="review"><span>06</span>复习</button>
+    </nav>
+    <div class="header-actions">
+      <a class="report-link" href="experiment.html">Graphify 实验</a>
+      <span id="header-progress" class="header-progress">0 / 16 已复习</span>
+      <button id="theme-toggle" class="icon-button" aria-label="切换浅色主题" title="切换主题">◐</button>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="view active" data-view-panel="home" aria-labelledby="home-title">
+      <div class="home-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">START HERE · PI 架构学习入口</p>
+          <h1 id="home-title" tabindex="-1">从入口到存储，<br><em>完整拆开 pi。</em></h1>
+          <p class="lede">这是一份从上到下、再深入到函数和状态的源码研究底稿：覆盖全部正式 package、五条关键机制、状态读写、扩展生命周期，以及正在演进的新会话架构。</p>
+          <div class="hero-actions">
+            <button class="primary" data-view="architecture">进入全景架构 <span>→</span></button>
+            <button class="secondary" data-view="memory">查看状态与记忆</button>
+          </div>
+        </div>
+        <aside class="mental-card">
+          <p class="eyebrow">ANALYSIS COVERAGE</p>
+          <h2>不是四个类，<br>而是完整系统。</h2>
+          <div class="mini-stack" aria-label="pi 全景分析范围">
+            <span>10 layers <small>自上而下</small></span>
+            <span>9 packages <small>全部归档</small></span>
+            <span>504 source files <small>模块盘点</small></span>
+            <span>5 mechanisms <small>函数级拆解</small></span>
+          </div>
+        </aside>
+      </div>
+
+      <section class="objects-section" aria-labelledby="objects-title">
+        <div class="section-title"><div><p class="eyebrow">FIRST DISTINCTION</p><h2 id="objects-title">先分清现在手里有什么</h2></div><p>你之前难以理解，是因为四个角色被混在了一张仪表盘里。</p></div>
+        <div id="object-grid" class="object-grid"></div>
+      </section>
+
+      <section class="learning-map" aria-labelledby="map-title">
+        <div class="map-intro"><p class="eyebrow">LEARNING MAP</p><h2 id="map-title">建议按这个顺序理解</h2><p>先看全景确定系统边界，再专门理解状态与记忆，最后沿一次真实请求核对各层协作。</p></div>
+        <ol class="chapter-roadmap">
+          <li><button data-view="architecture"><b>03</b><span>从上到下看全景</span><small>10 层、9 packages、全部子系统</small></button></li>
+          <li><button data-view="memory"><b>04</b><span>状态和记忆在哪里</span><small>JSONL 主链与 durable v2</small></button></li>
+          <li><button data-view="runtime"><b>05</b><span>五条机制怎样真正运行</span><small>函数、事件、状态写入</small></button></li>
+          <li><button data-view="review"><b>06</b><span>进入源码验证</span><small>复习卡与分层阅读顺序</small></button></li>
+        </ol>
+      </section>
+
+      <aside class="method-proof"><div><strong>图谱已生成</strong><span>12,135 节点 · 32,802 关系</span></div><p>它负责“找可能相关的代码”；本报告中的架构结论则回到了 pi 源码进行验证。</p></aside>
+      <div class="next-section"><span>开始下钻</span><button data-view="architecture">先建立 pi 的完整系统地图 <b>→</b></button></div>
+    </section>
+
+    <section class="view" data-view-panel="method" aria-labelledby="method-title" hidden>
+      <header class="page-title">
+        <div><p class="eyebrow">02 / RESEARCH METHOD</p><h1 id="method-title" tabindex="-1">不要让 AI “总结项目”。<br><em>驱动它形成证据。</em></h1><p>一次只问一个架构问题，用图谱缩小范围，用源码定案，用测试挑战结论。</p></div>
+        <div class="chapter-badge"><strong>6</strong><span>研究步骤</span></div>
+      </header>
+
+      <div class="method-workspace">
+        <ol id="method-steps" class="step-rail" aria-label="六步研究法"></ol>
+        <article id="method-detail" class="step-detail" aria-live="polite"></article>
+      </div>
+
+      <section class="evidence-section">
+        <div class="section-title"><div><p class="eyebrow">EVIDENCE LADDER</p><h2>四层证据，不要混用</h2></div><p>越往下越接近真实行为；Graphify 位于“导航”，不是最终事实。</p></div>
+        <div id="evidence-levels" class="evidence-grid"></div>
+      </section>
+
+      <section class="prompt-panel" aria-labelledby="prompt-title">
+        <div><p class="eyebrow">READY-TO-USE DRIVER</p><h2 id="prompt-title">给 AI 的研究指令</h2><p>把方括号替换成一个具体问题，例如“一次工具调用如何执行”。</p><button id="copy-prompt" class="copy-button">复制研究指令</button></div>
+        <pre><code id="prompt-template"></code></pre>
+      </section>
+      <div class="next-section"><span>下一章</span><button data-view="architecture">沿十层架构从产品入口读到底层 <b>→</b></button></div>
+    </section>
+
+    <section class="view" data-view-panel="architecture" aria-labelledby="architecture-title" hidden>
+      <header class="page-title">
+        <div><p class="eyebrow">03 / FULL SYSTEM ARCHITECTURE</p><h1 id="architecture-title" tabindex="-1">从产品入口，<br>一路看到<em>存储与协议</em>。</h1><p>选择左侧架构层，再选择模块查看职责、状态、控制流和源码入口。这里覆盖全部正式 package，不再只是主链切片。</p></div>
+        <div class="chapter-badge"><strong>10</strong><span>架构层级</span></div>
+      </header>
+
+      <div class="architecture-stats" id="architecture-stats"></div>
+      <div class="system-workspace">
+        <ol id="system-layer-rail" class="system-layer-rail" aria-label="pi 十层架构"></ol>
+        <article class="system-layer-detail">
+          <header id="system-layer-header"></header>
+          <div id="system-module-grid" class="system-module-grid"></div>
+          <aside id="system-module-detail" class="system-module-detail" aria-live="polite"></aside>
+        </article>
+      </div>
+
+      <section class="package-catalog-section">
+        <div class="section-title"><div><p class="eyebrow">MONOREPO CATALOG</p><h2>九个正式 package，一个都不省略</h2></div><p>文件数统计来自固定提交的 `src/**/*.ts`；依赖只表示 pi package 之间的方向。</p></div>
+        <div id="system-package-catalog" class="system-package-catalog"></div>
+      </section>
+
+      <section class="maturity-section" aria-labelledby="maturity-title">
+        <div class="section-title"><div><p class="eyebrow">IMPLEMENTATION MATURITY</p><h2 id="maturity-title">同一个仓库，不代表所有模块都已经接入主链</h2></div><p>成熟度按“当前是否被默认产品路径依赖”划分，而不是根据文件数量或类型定义判断。</p></div>
+        <div id="maturity-atlas" class="maturity-atlas"></div>
+      </section>
+
+      <section class="agent-builder-section" aria-labelledby="agent-builder-title">
+        <div class="section-title"><div><p class="eyebrow">FROM PI TO YOUR AGENT</p><h2 id="agent-builder-title">以后开发自己的 Agent，先选择复用深度</h2></div><p>这不是新的开发框架，而是一张决策底图：哪些能力直接用 pi，哪些必须由你的产品负责。</p></div>
+        <aside id="agent-builder-thesis" class="agent-builder-thesis"></aside>
+        <div id="agent-route-tabs" class="agent-route-tabs" role="tablist" aria-label="Agent 开发路线"></div>
+        <article id="agent-route-detail" class="agent-route-detail" aria-live="polite"></article>
+
+        <div class="subsection-heading"><p class="eyebrow">CAPABILITY OWNERSHIP</p><h3>八项能力的复用边界</h3><p>绿色不是“无需思考”，而是 pi 已提供稳定原语；“必须自研”表示它属于你的产品责任。</p></div>
+        <div class="table-scroll"><table class="agent-capability-table"><thead><tr><th>能力层</th><th>pi 已提供</th><th>你仍需负责</th><th>建议</th></tr></thead><tbody id="agent-capability-body"></tbody></table></div>
+
+        <div class="subsection-heading"><p class="eyebrow">MINIMUM LEARNING PATH</p><h3>四阶段就够，不要一开始读完 504 个文件</h3></div>
+        <ol id="agent-learning-path" class="agent-learning-path"></ol>
+        <aside class="agent-pitfalls"><strong>开始开发前必须避免</strong><ul id="agent-pitfalls"></ul></aside>
+      </section>
+
+      <section class="architecture-findings"><div class="section-title"><div><p class="eyebrow">BOUNDARY FINDINGS</p><h2>六个不能混淆的架构结论</h2></div></div><ol id="architecture-findings"></ol></section>
+      <div class="next-section"><span>下一章</span><button data-view="memory">单独拆解状态、会话、压缩与长期记忆缺口 <b>→</b></button></div>
+    </section>
+
+    <section class="view" data-view-panel="memory" aria-labelledby="memory-title" hidden>
+      <header class="page-title">
+        <div><p class="eyebrow">04 / STATE & MEMORY</p><h1 id="memory-title" tabindex="-1">状态不是记忆，<br>持久化也不等于<em>长期记忆</em>。</h1><p>pi 同时存在 AgentState、LLM Context、JSONL 会话树、压缩摘要、项目知识、配置状态和新的 durable session contract。点击逐项比较。</p></div>
+        <div class="chapter-badge"><strong>8</strong><span>状态与记忆类型</span></div>
+      </header>
+      <div class="memory-workspace">
+        <ol id="memory-rail" class="memory-rail"></ol>
+        <article id="memory-detail" class="memory-detail" aria-live="polite"></article>
+      </div>
+      <section class="state-matrix-section" aria-labelledby="state-matrix-title">
+        <div class="section-title"><div><p class="eyebrow">READ / WRITE / PERSIST</p><h2 id="state-matrix-title">十种状态，分别由谁读、谁写、保存多久</h2></div><p>用这张矩阵判断某个信息究竟是运行态、工作上下文、会话历史、配置，还是尚未实现的长期记忆。</p></div>
+        <div class="table-scroll"><table class="state-matrix"><thead><tr><th>状态</th><th>所有者 / 范围</th><th>读取者</th><th>写入者</th><th>持久化</th></tr></thead><tbody id="state-matrix-body"></tbody></table></div>
+      </section>
+      <section class="entry-model-section" aria-labelledby="entry-model-title">
+        <div class="section-title"><div><p class="eyebrow">CURRENT JSONL DATA MODEL</p><h2 id="entry-model-title">九种 SessionEntry，决定什么进入模型上下文</h2></div><p>每一行 JSONL 都是 append-only 树节点；`custom` 与 `custom_message` 的差别尤其重要。</p></div>
+        <div id="session-entry-grid" class="session-entry-grid"></div>
+      </section>
+      <section class="dual-session-section">
+        <div class="section-title"><div><p class="eyebrow">TWO SESSION ARCHITECTURES</p><h2>当前主链和下一代架构必须分开看</h2></div><p>类型、存储后端存在，不代表执行层已经接通。</p></div>
+        <div class="dual-session-grid"><article><span>CURRENT PRODUCT PATH</span><h3>AgentSession + JSONL</h3><p>当前 coding-agent CLI 的真实主链。SessionManager 追加消息、模型变化、thinking level、compaction 和分支信息。</p><code>coding-agent/src/core/session-manager.ts</code></article><article class="future"><span>EVOLVING V2 PATH</span><h3>AgentHarness + SessionRepo</h3><p>Entry/Record/Lane/SQLite contract 已建立，但 AgentHarness 的 prompt、resume、compact 等仍是 HarnessNotImplemented。</p><code>agent/src/harness/agent-harness.ts</code></article></div>
+      </section>
+      <aside class="memory-gap"><strong>长期语义记忆缺口</strong><p>pi core 没有自动事实提取、embedding、跨会话召回、重要性、更新或遗忘策略。以后开发自己的 Agent 时，这是一层需要单独设计的系统，而不是把 session history 换一个名称。</p></aside>
+      <div class="next-section"><span>下一章</span><button data-view="runtime">观察一次请求在哪些位置读取和写入状态 <b>→</b></button></div>
+    </section>
+
+    <section class="view" data-view-panel="runtime" aria-labelledby="runtime-title" hidden>
+      <header class="page-title">
+        <div><p class="eyebrow">05 / RUNTIME & MECHANISMS</p><h1 id="runtime-title" tabindex="-1">从八步主链，<br>深入五条<em>关键机制</em>。</h1><p>先用八步建立整体时序，再选择普通对话、工具调用、压缩、扩展或会话树，追踪到函数、事件和状态写入。</p></div>
+        <div class="chapter-badge"><strong>5</strong><span>机制解剖</span></div>
+      </header>
+
+      <div class="runtime-overview" aria-label="运行主链">
+        <span>用户输入</span><i>→</i><span>产品编排</span><i>→</i><span>Agent loop</span><i>⇄</i><span>模型 / 工具</span><i>→</i><span>会话 + TUI</span>
+      </div>
+      <div class="runtime-workspace">
+        <ol id="runtime-steps" class="runtime-rail"></ol>
+        <article id="runtime-detail" class="runtime-detail" aria-live="polite"></article>
+      </div>
+
+      <section class="mechanism-lab" aria-labelledby="mechanism-title">
+        <div class="section-title"><div><p class="eyebrow">MECHANISM LAB</p><h2 id="mechanism-title">选择一条机制，追踪到函数、事件和状态写入</h2></div><p>基础八步解释“经过哪些层”；这里进一步回答“每一层具体做了什么”。</p></div>
+        <div id="deep-dive-tabs" class="deep-dive-tabs" role="tablist" aria-label="机制选择"></div>
+        <article id="deep-dive-summary" class="deep-dive-summary" aria-live="polite"></article>
+        <div class="deep-dive-workspace">
+          <ol id="deep-dive-steps" class="deep-dive-steps" aria-label="机制步骤"></ol>
+          <article id="deep-dive-detail" class="deep-dive-detail" aria-live="polite"></article>
+        </div>
+      </section>
+
+      <section class="hook-section" aria-labelledby="hook-title">
+        <div class="section-title"><div><p class="eyebrow">EXTENSION LIFECYCLE</p><h2 id="hook-title">扩展可以在哪十一个阶段介入</h2></div><p>点击阶段，判断能力应该写成扩展、工具、Provider，还是必须修改核心。</p></div>
+        <div class="hook-workspace"><ol id="hook-rail" class="hook-rail"></ol><article id="hook-detail" class="hook-detail" aria-live="polite"></article></div>
+      </section>
+
+      <section class="loop-explainer">
+        <div><p class="eyebrow">THE CORE LOOP</p><h2>为什么一次请求可能调用模型多次？</h2></div>
+        <div class="loop-diagram" aria-label="模型工具循环"><span>模型响应</span><b>toolCall</b><span>执行工具</span><b>toolResult</b><span>再次调用模型</span><b>直到无工具</b><span>结束</span></div>
+        <p>工具不是终点。它的结果会作为新的上下文回到模型；这正是 Agent 和普通聊天调用的核心差异。</p>
+      </section>
+      <div class="next-section"><span>下一章</span><button data-view="review">进入分层源码阅读和复习 <b>→</b></button></div>
+    </section>
+
+    <section class="view" data-view-panel="review" aria-labelledby="review-title" hidden>
+      <header class="page-title review-heading">
+        <div><p class="eyebrow">06 / REVIEW & SOURCE ENTRY</p><h1 id="review-title" tabindex="-1">能从系统讲到文件，<br>才算真正理解。</h1><p>先尝试口头回答，再展开答案。随后按层级进入源码，而不是只追着高连接度类阅读。</p></div>
+        <div class="review-score"><strong id="review-score">0%</strong><span>复习完成度</span><progress id="review-progress" value="0" max="16"></progress></div>
+      </header>
+
+      <div id="review-grid" class="review-grid"></div>
+      <div class="review-actions"><button id="reset-review" class="secondary">重置复习状态</button><span>建议完成后，回到“运行原理”再次口述完整主链。</span></div>
+
+      <section class="evidence-index-section" aria-labelledby="evidence-index-title">
+        <div class="section-title"><div><p class="eyebrow">QUESTION → SOURCE</p><h2 id="evidence-index-title">以后从研究问题出发，不必先猜类名</h2></div><p>选择一个问题，页面会给出最短源码入口和阅读目的。</p></div>
+        <div id="evidence-question-grid" class="evidence-question-grid"></div>
+      </section>
+
+      <section class="glossary-section" aria-labelledby="glossary-title">
+        <div class="section-title"><div><p class="eyebrow">WORKING GLOSSARY</p><h2 id="glossary-title">十二个概念，构成后续研究的共同语言</h2></div></div>
+        <dl id="glossary-grid" class="glossary-grid"></dl>
+      </section>
+
+      <section class="source-index">
+        <div class="section-title"><div><p class="eyebrow">SOURCE READING ORDER</p><h2>按架构层阅读这十五个入口</h2></div><p>先确认当前主链，再读模型、工具、TUI、远程协议和新 durable session。</p></div>
+        <ol>
+          <li><code>packages/coding-agent/src/main.ts</code><span>启动与运行模式选择</span></li>
+          <li><code>packages/coding-agent/src/modes/interactive/interactive-mode.ts</code><span>输入与 UI 事件</span></li>
+          <li><code>packages/coding-agent/src/core/sdk.ts</code><span>组装 AgentSession</span></li>
+          <li><code>packages/coding-agent/src/core/agent-session.ts</code><span>产品编排核心</span></li>
+          <li><code>packages/agent/src/agent.ts</code><span>Agent 状态和生命周期</span></li>
+          <li><code>packages/agent/src/agent-loop.ts</code><span>模型与工具循环</span></li>
+          <li><code>packages/coding-agent/src/core/model-runtime.ts</code><span>模型与认证门面</span></li>
+          <li><code>packages/coding-agent/src/core/session-manager.ts</code><span>JSONL 会话树</span></li>
+          <li><code>packages/coding-agent/src/core/resource-loader.ts</code><span>资源发现和加载</span></li>
+          <li><code>packages/coding-agent/src/core/extensions/runner.ts</code><span>扩展生命周期</span></li>
+          <li><code>packages/ai/src/models.ts</code><span>Provider collection 与模型路由</span></li>
+          <li><code>packages/tui/src/tui.ts</code><span>终端组件、焦点与 overlay</span></li>
+          <li><code>packages/protocol/src/schemas.ts</code><span>实验性远程消息契约</span></li>
+          <li><code>packages/agent/src/harness/session/types.ts</code><span>新 durable session contract</span></li>
+          <li><code>packages/agent/src/harness/agent-harness.ts</code><span>v2 scaffold 与未实现边界</span></li>
+        </ol>
+      </section>
+
+      <aside class="final-thesis"><span>最终心智模型</span><p>Graphify 负责把陌生仓库变成可查询地图；AI 用地图找到入口；源码和测试决定架构事实；Web 把这条研究路径沉淀为可反复复习的知识。</p></aside>
+      <div class="next-section"><span>重新开始</span><button data-view="home">回到学习入口 <b>↗</b></button></div>
+    </section>
+  </main>
+
+  <footer><span>pi architecture notebook · source-backed</span><span id="build-meta">loading evidence…</span></footer>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

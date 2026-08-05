@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Graphify 在 pi 仓库上的完整建图、查询和边界实验">
+  <title>Graphify × pi 实验报告</title>
+  <link rel="stylesheet" href="experiment.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="lab-header">
+    <a class="lab-brand" href="experiment.html#overview"><span>G</span><strong>Graphify Lab<small>PI REPOSITORY EXPERIMENT</small></strong></a>
+    <nav aria-label="实验报告章节">
+      <button data-view="overview" class="active">总览</button>
+      <button data-view="architecture">图谱</button>
+      <button data-view="experiments">实验</button>
+      <button data-view="verdict">结论</button>
+    </nav>
+    <div class="lab-actions"><a href="index.html#home">pi 学习工作台 →</a><button id="lab-theme" aria-label="切换浅色主题">☼</button></div>
+  </header>
+
+  <main id="content">
+    <section class="lab-view active" data-view-panel="overview">
+      <div class="lab-hero">
+        <div><p class="kicker">GRAPHIFY × PI · REPRODUCIBLE STUDY</p><h1 tabindex="-1">一张代码图，能否让 Agent<br><em>真正看懂一个仓库？</em></h1><p class="lead">我们安装 Graphify，用真实 TypeScript Agent monorepo pi 做了全量建图、增量稳定性和查询实验。这是实验原页的独立保留版本。</p><button class="lab-primary" data-view="architecture">查看真实图谱 <span>→</span></button></div>
+        <aside class="verdict-card"><div><span class="status">实验完成</span><code>pi@f909da2b</code></div><div class="score"><strong>73</strong><small>/ 100</small></div><h2>值得作为结构化检索层</h2><p>它擅长导航，不应独立决定代码修改。</p></aside>
+      </div>
+      <div id="metric-grid" class="metric-grid"></div>
+      <div class="overview-grid"><article class="lab-panel"><header><p class="kicker">CODE COVERAGE</p><h2>扫描范围</h2></header><div id="package-bars" class="bar-list"></div></article><article class="lab-panel"><header><p class="kicker">RELATION TYPES</p><h2>关系构成</h2></header><div id="relation-bars" class="bar-list"></div></article></div>
+      <div class="finding-grid"><article><span>01</span><h3>明确符号查询有效</h3><p>AgentSession、ExtensionRunner 等已知符号能快速定位入口和直接关系。</p></article><article><span>02</span><h3>宽泛问题仍有噪声</h3><p>自然语言过宽时会落到测试、配置和同名节点，不能替代源码阅读。</p></article><article><span>03</span><h3>聚类不是稳定接口</h3><p>结构不变时社区编号和数量仍可能变化，不适合作为自动化契约。</p></article></div>
+    </section>
+
+    <section class="lab-view" data-view-panel="architecture" hidden>
+      <header class="page-head"><div><p class="kicker">REAL GRAPH SLICE</p><h1 tabindex="-1">pi 的核心图谱切片</h1><p>下面是 Graphify 从真实源码提取的 12 个核心节点和直接关系。选择节点查看来源、连接度和社区。</p></div><div class="head-stat"><strong id="architecture-count">0</strong><span>完整图节点</span></div></header>
+      <div class="graph-layout"><article class="graph-panel"><div class="graph-legend"><span><i></i>核心节点</span><span><i class="support"></i>支持节点</span><span>线 = EXTRACTED relation</span></div><div class="graph-scroll"><svg id="architecture-graph" viewBox="0 0 880 580" role="img" aria-label="pi 核心代码关系图"></svg></div></article><aside id="node-inspector" class="node-inspector"></aside></div>
+      <div class="overview-grid"><article class="lab-panel"><header><p class="kicker">GOD NODES</p><h2>最高连接度</h2></header><div id="node-ranking" class="rank-list"></div></article><article class="lab-panel"><header><p class="kicker">COMMUNITIES</p><h2>最大社区</h2></header><div id="community-ranking" class="rank-list"></div></article></div>
+    </section>
+
+    <section class="lab-view" data-view-panel="experiments" hidden>
+      <header class="page-head"><div><p class="kicker">SIX BUILD RUNS</p><h1 tabindex="-1">构建稳定性与查询证据</h1><p>不是一次成功截图，而是六次可比较构建和五类查询案例。</p></div><div class="head-stat"><strong>6</strong><span>构建运行</span></div></header>
+      <article class="lab-panel"><div id="run-timeline" class="timeline"></div></article>
+      <article class="lab-panel query-panel"><header class="query-head"><div><p class="kicker">QUERY CASES</p><h2>Graphify 什么时候好用？</h2></div><div class="filters" role="group" aria-label="查询案例筛选"><button class="active" data-filter="all">全部</button><button data-filter="useful">有效</button><button data-filter="noisy">噪声</button><button data-filter="risk">风险</button></div></header><div id="query-grid" class="query-grid"></div></article>
+      <aside class="warning"><strong>复现陷阱：执行目录会影响来源提交</strong><p>从父仓库运行 cluster-only 曾记录错误提交；回到 pi 仓库上下文重跑后才修正为 <code>f909da2b</code>。</p></aside>
+    </section>
+
+    <section class="lab-view" data-view-panel="verdict" hidden>
+      <header class="page-head"><div><p class="kicker">FINAL VERDICT</p><h1 tabindex="-1">值得研究，但要放在正确位置</h1><p>Graphify 是 Agent 的代码地图，不是代码事实本身。</p></div><div class="head-stat positive"><strong>73</strong><span>综合评分</span></div></header>
+      <div class="decision-grid"><article><span>适合</span><h2>结构化导航</h2><ul><li>定位已知符号</li><li>查看直接依赖</li><li>缩小源码候选集</li></ul></article><article class="caution"><span>需要验证</span><h2>影响与架构判断</h2><ul><li>同名符号消歧</li><li>跨模块路径</li><li>聚类和关键节点</li></ul></article><article class="negative"><span>不应单独承担</span><h2>自主修改决策</h2><ul><li>业务语义</li><li>运行时边界</li><li>回归正确性</li></ul></article></div>
+      <div class="overview-grid"><article class="lab-panel"><header><p class="kicker">SCORECARD</p><h2>能力评分</h2></header><div class="score-list"><div><span>明确符号导航</span><progress value="9" max="10"></progress><b>9</b></div><div><span>关系可解释性</span><progress value="8" max="10"></progress><b>8</b></div><div><span>自然语言检索</span><progress value="5" max="10"></progress><b>5</b></div><div><span>构建稳定性</span><progress value="6" max="10"></progress><b>6</b></div></div></article><article class="lab-panel"><header><p class="kicker">NEXT STEP</p><h2>正确的组合方式</h2></header><ol class="next-list"><li><b>Graphify 导航</b><span>找候选符号和路径</span></li><li><b>源码定案</b><span>核对实际调用与状态变化</span></li><li><b>测试验证</b><span>确认边界和用户行为</span></li></ol></article></div>
+      <aside class="return-card"><div><p class="kicker">CONTINUE LEARNING</p><h2>实验之后，回到 pi 架构。</h2><p>新学习工作台会把这些图谱证据组织成分层、运行链路和复习卡。</p></div><a href="index.html#home">进入 pi 学习工作台 →</a></aside>
+    </section>
+  </main>
+  <footer><span>Graphify × pi · original experiment report</span><span id="lab-meta">loading…</span></footer>
+  <script src="data.js"></script><script src="experiment.js"></script>
+</body>
+</html>

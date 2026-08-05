@@ -1,0 +1,589 @@
+{
+  "meta": {
+    "title": "pi 机制级研究底稿",
+    "commit": "f909da2bf0e39ebeca9b2608f511d4167435360e",
+    "deepDiveCount": 5,
+    "stateRowCount": 10,
+    "hookStageCount": 11,
+    "evidenceQuestionCount": 12,
+    "scope": "当前 coding-agent 主链、agent loop、扩展系统、JSONL session，以及 durable v2 的实现边界"
+  },
+  "deepDives": [
+    {
+      "id": "conversation",
+      "number": "01",
+      "name": "一次普通对话",
+      "summary": "从终端提交文本，到模型流式输出、消息持久化和界面更新。没有工具调用时，这是一条完整的最短主链。",
+      "question": "用户输入一句话后，哪些对象依次接手？",
+      "status": "当前主链",
+      "steps": [
+        {
+          "number": "01",
+          "title": "TUI 接收提交",
+          "actor": "InteractiveMode",
+          "source": "packages/coding-agent/src/modes/interactive/interactive-mode.ts:L2840-L2997",
+          "input": "EditorComponent 提交的文本",
+          "action": "先判断 slash command、bash、队列等特殊输入；普通文本调用 session.prompt(text)。",
+          "output": "进入产品编排层的 prompt 请求",
+          "state": "编辑器文本和历史记录更新；核心 AgentState 尚未变化",
+          "event": "TUI 本地输入事件",
+          "failure": "空输入、命令或特殊模式会在进入 Agent 前被分流"
+        },
+        {
+          "number": "02",
+          "title": "输入预检与扩展变换",
+          "actor": "AgentSession.prompt",
+          "source": "packages/coding-agent/src/core/agent-session.ts:L1116-L1269",
+          "input": "文本、图片、source、streamingBehavior",
+          "action": "执行扩展命令、input hook、skill/template 展开，校验模型与认证，并检查是否需要提前压缩。",
+          "output": "标准化的 AgentMessage[]",
+          "state": "可能写入 systemPromptOverride、消费 pendingNextTurnMessages",
+          "event": "input、before_agent_start",
+          "failure": "无模型、无凭据、压缩进行中或流式队列策略缺失会终止预检"
+        },
+        {
+          "number": "03",
+          "title": "Agent 建立运行生命周期",
+          "actor": "Agent.prompt",
+          "source": "packages/agent/src/agent.ts:L344-L419",
+          "input": "AgentMessage[]",
+          "action": "拒绝并发 activeRun，标准化输入，创建 AbortSignal，并调用 runAgentLoop。",
+          "output": "一个受生命周期和取消信号管理的 Agent run",
+          "state": "activeRun/streaming 状态开启，队列仍可接收 steer 或 followUp",
+          "event": "agent_start、turn_start、message_start/message_end",
+          "failure": "已有 activeRun 时要求使用 steer/followUp 或等待完成"
+        },
+        {
+          "number": "04",
+          "title": "构造模型上下文",
+          "actor": "agent-loop.streamAssistantResponse",
+          "source": "packages/agent/src/agent-loop.ts:L281-L308",
+          "input": "AgentContext.messages、systemPrompt、tools、model",
+          "action": "先运行 transformContext，再调用 convertToLlm，把应用消息转换为 Provider 可接受的 Message[]。",
+          "output": "LLM Context + tool definitions",
+          "state": "本轮 working context 形成，但不会直接覆盖完整 session 历史",
+          "event": "context hook 位于这里之前",
+          "failure": "自定义 AgentMessage 若没有被 convertToLlm 处理，Provider 会拒绝"
+        },
+        {
+          "number": "05",
+          "title": "Provider 流式返回",
+          "actor": "pi-ai Models / Provider",
+          "source": "packages/ai/src/models.ts:L142-L215; packages/agent/src/agent-loop.ts:L308-L370",
+          "input": "Model、Context、SimpleStreamOptions、认证结果",
+          "action": "Models 把请求路由给拥有该模型的 Provider；agent-loop 消费 start/delta/done/error 事件。",
+          "output": "规范化 AssistantMessage",
+          "state": "streamingMessage 随 delta 更新，最终 assistant message 进入 messages",
+          "event": "message_start、message_update、message_end",
+          "failure": "error/aborted 会直接结束 turn；length 会阻止执行可能被截断的工具参数"
+        },
+        {
+          "number": "06",
+          "title": "消息写入当前会话",
+          "actor": "AgentSession._handleAgentEvent",
+          "source": "packages/coding-agent/src/core/agent-session.ts:L609-L684",
+          "input": "message_end 中的 user/assistant/toolResult",
+          "action": "先通知扩展和 UI，再调用 SessionManager.appendMessage；custom message 使用独立 entry。",
+          "output": "追加式 JSONL SessionMessageEntry",
+          "state": "leafId 指向新 entry；assistant 消息被记录为自动压缩和重试判断依据",
+          "event": "message_end、可能的 auto_retry_end",
+          "failure": "bash、compaction、branch summary 由各自路径持久化，不在此分支处理"
+        },
+        {
+          "number": "07",
+          "title": "运行收尾与界面稳定",
+          "actor": "AgentSession + InteractiveMode",
+          "source": "packages/coding-agent/src/core/agent-session.ts:L1063-L1113",
+          "input": "agent_end 和最后一条 assistant message",
+          "action": "检查自动重试、上下文压缩和排队消息；没有后续工作时发出 agent_settled。",
+          "output": "可再次输入的稳定会话",
+          "state": "activeRun 清除；必要时 agent.continue() 开启下一轮",
+          "event": "agent_end、agent_settled、auto_compaction 或 auto_retry",
+          "failure": "agent_end 不一定等于真正空闲；扩展可能在该事件后追加下一轮消息"
+        }
+      ]
+    },
+    {
+      "id": "tool-call",
+      "number": "02",
+      "name": "一次工具调用",
+      "summary": "模型生成 toolCall 后，Agent 验证、拦截、串行或并行执行，再把 toolResult 作为新上下文送回模型。",
+      "question": "工具为什么不是调用一次函数就结束？",
+      "status": "当前主链",
+      "steps": [
+        {
+          "number": "01",
+          "title": "模型生成 toolCall",
+          "actor": "Provider → agent-loop",
+          "source": "packages/agent/src/agent-loop.ts:L193-L224",
+          "input": "工具名称、JSON 参数和 assistant 响应",
+          "action": "从 AssistantMessage.content 过滤 toolCall；若 stopReason=length，则不信任被截断参数。",
+          "output": "待执行的 AgentToolCall[]",
+          "state": "assistant message 已进入当前 context",
+          "event": "message_end、随后 tool_execution_start",
+          "failure": "length 会为全部调用生成错误 toolResult，而不会执行"
+        },
+        {
+          "number": "02",
+          "title": "选择串行或并行",
+          "actor": "executeToolCalls",
+          "source": "packages/agent/src/agent-loop.ts:L411-L425",
+          "input": "工具批次、全局 toolExecution 策略",
+          "action": "任一工具声明 executionMode=sequential，或全局要求串行，则整个批次串行；否则并行。",
+          "output": "确定的批次执行策略",
+          "state": "pendingToolCalls 由 tool_execution 事件维护",
+          "event": "tool_execution_start",
+          "failure": "文件修改工具可通过 sequential 避免潜在写冲突"
+        },
+        {
+          "number": "03",
+          "title": "解析、校验与前置拦截",
+          "actor": "prepareToolCall",
+          "source": "packages/agent/src/agent-loop.ts:L586-L656",
+          "input": "toolCall + 工具 schema",
+          "action": "查找工具、可选预处理参数、TypeBox 校验，并运行 beforeToolCall/tool_call 扩展。",
+          "output": "PreparedToolCall 或立即错误结果",
+          "state": "尚未修改外部世界",
+          "event": "tool_call 可 block",
+          "failure": "工具不存在、参数错误、扩展阻止或 AbortSignal 均转为 isError toolResult"
+        },
+        {
+          "number": "04",
+          "title": "实际执行并报告进度",
+          "actor": "AgentTool.execute",
+          "source": "packages/agent/src/agent-loop.ts:L666-L705",
+          "input": "已验证参数、AbortSignal、update callback",
+          "action": "调用工具实现；partialResult 被转成 tool_execution_update，完成后等待所有更新事件落定。",
+          "output": "AgentToolResult",
+          "state": "工具可能修改文件或外部环境；AgentState 仍通过事件反映进度",
+          "event": "tool_execution_update",
+          "failure": "抛出的异常被捕获并转成标准错误结果"
+        },
+        {
+          "number": "05",
+          "title": "后置修改结果",
+          "actor": "finalizeExecutedToolCall",
+          "source": "packages/agent/src/agent-loop.ts:L709-L760",
+          "input": "执行结果、isError、调用上下文",
+          "action": "afterToolCall/tool_result 扩展可替换 content、details、usage、terminate 和 isError。",
+          "output": "最终工具结果",
+          "state": "扩展可以改变模型最终看到的结果，但不能改写已经发生的外部副作用",
+          "event": "tool_result、tool_execution_end",
+          "failure": "后置 hook 抛错时，原结果会被错误结果替代"
+        },
+        {
+          "number": "06",
+          "title": "生成 ToolResultMessage",
+          "actor": "agent-loop",
+          "source": "packages/agent/src/agent-loop.ts:L763-L790",
+          "input": "FinalizedToolCallOutcome",
+          "action": "构造 role=toolResult 的消息，保留 call id、tool name、content、details、usage、isError。",
+          "output": "可持久化、可发送给模型的 ToolResultMessage",
+          "state": "追加到 currentContext 和 newMessages",
+          "event": "message_start、message_end",
+          "failure": "无 content 的非类型化扩展工具会被规范化为空数组"
+        },
+        {
+          "number": "07",
+          "title": "工具结果回到模型",
+          "actor": "runLoop inner loop",
+          "source": "packages/agent/src/agent-loop.ts:L203-L274",
+          "input": "assistant message + ToolResultMessage[]",
+          "action": "把结果加入上下文；若批次未 terminate，进入下一 turn，再次调用模型。",
+          "output": "新的 assistant 响应，可能继续调用工具或结束",
+          "state": "JSONL 中形成 assistant → toolResult → assistant 的连续分支",
+          "event": "turn_end → turn_start",
+          "failure": "只有所有已完成调用都 terminate=true，批次才停止继续模型循环"
+        }
+      ]
+    },
+    {
+      "id": "compaction",
+      "number": "03",
+      "name": "上下文压缩",
+      "summary": "压缩不会删除 JSONL 历史；它追加一条 compaction entry，让后续 LLM Context 使用摘要和保留尾部。",
+      "question": "完整历史还在，为什么模型只看到一部分？",
+      "status": "当前主链",
+      "steps": [
+        {
+          "number": "01",
+          "title": "判断是否需要压缩",
+          "actor": "AgentSession._checkCompaction",
+          "source": "packages/coding-agent/src/core/agent-session.ts:L1959-L2218",
+          "input": "最后 assistant usage、context window、reserveTokens、阈值",
+          "action": "区分 threshold 和 overflow；手动 /compact 走同一压缩核心但触发原因不同。",
+          "output": "继续、压缩后重试或不处理",
+          "state": "autoCompaction AbortController 和 willRetry 状态可能开启",
+          "event": "auto_compaction_start/end",
+          "failure": "压缩被关闭、已经在压缩或找不到可压缩内容时不会执行"
+        },
+        {
+          "number": "02",
+          "title": "扩展可取消或替换",
+          "actor": "session_before_compact hook",
+          "source": "packages/coding-agent/src/core/agent-session.ts:L1818-L1878",
+          "input": "branchEntries、preparation、trigger、willRetry",
+          "action": "扩展可以 cancel，也可以直接提供自定义 CompactionResult。",
+          "output": "默认压缩、扩展结果或取消",
+          "state": "hook 决定 summary/details/fromHook",
+          "event": "session_before_compact",
+          "failure": "取消时原 context 保持不变"
+        },
+        {
+          "number": "03",
+          "title": "选择切分点",
+          "actor": "prepareCompaction",
+          "source": "packages/coding-agent/src/core/compaction/compaction.ts:L710-L780",
+          "input": "当前 leaf 路径、keepRecentTokens、已有 compaction",
+          "action": "从最新消息向后估算 token，选择 firstKeptEntryId；必要时允许在一个 turn 内切分。",
+          "output": "要总结的旧历史、保留尾部和 split-turn 前缀",
+          "state": "只计算边界，不修改 JSONL",
+          "event": "无公共 AgentEvent",
+          "failure": "缺少有效 firstKeptEntry 会拒绝压缩"
+        },
+        {
+          "number": "04",
+          "title": "调用模型生成检查点摘要",
+          "actor": "compact / generateSummary",
+          "source": "packages/coding-agent/src/core/compaction/compaction.ts:L621-L916",
+          "input": "历史消息、已有摘要、可选自定义指令",
+          "action": "首次生成或增量更新结构化摘要；split turn 时分别总结旧历史与当前 turn 前缀。",
+          "output": "summary、usage、tokensBefore、firstKeptEntryId",
+          "state": "把 read/modified file 列表附加到摘要，帮助后续继续工作",
+          "event": "模型流式调用由 summarization stream 承担",
+          "failure": "取消信号或 Provider 错误会使本次压缩失败"
+        },
+        {
+          "number": "05",
+          "title": "追加 compaction entry",
+          "actor": "SessionManager.appendCompaction",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L1097-L1118",
+          "input": "summary 与保留边界",
+          "action": "作为当前 leaf 的子节点追加新 entry，并把 leaf 前移。旧 entries 不删除。",
+          "output": "持久化的 CompactionEntry",
+          "state": "JSONL 保留完整审计历史，active context 的解释规则改变",
+          "event": "session_compact",
+          "failure": "压缩不是数据库清理，也不减少 session 文件本身"
+        },
+        {
+          "number": "06",
+          "title": "重建压缩后的上下文",
+          "actor": "buildContextEntries",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L411-L474",
+          "input": "当前 leaf 路径和最新 compaction",
+          "action": "返回 compaction summary、firstKeptEntryId 开始的保留尾部，以及 compaction 之后的新 entries。",
+          "output": "更短的 AgentMessage[]",
+          "state": "working context 变短，transcript 仍完整",
+          "event": "下一次模型调用时生效",
+          "failure": "这是一种有损摘要；具体事实可能在 summary 中遗漏"
+        }
+      ]
+    },
+    {
+      "id": "extensions",
+      "number": "04",
+      "name": "扩展生命周期",
+      "summary": "扩展不是单一插件回调，而是跨输入、上下文、Provider、工具、会话和 TUI 的可组合拦截层。",
+      "question": "开发自己的 Agent 能力时，应改核心还是写扩展？",
+      "status": "当前主链",
+      "steps": [
+        {
+          "number": "01",
+          "title": "发现并加载扩展",
+          "actor": "ResourceLoader + extension loader",
+          "source": "packages/coding-agent/src/core/resource-loader.ts; packages/coding-agent/src/core/extensions/loader.ts",
+          "input": "用户目录、项目目录、CLI 路径和 pi packages",
+          "action": "解析扩展文件，创建 ExtensionAPI，让扩展注册 handlers、tools、commands、providers 和 UI。",
+          "output": "LoadExtensionsResult",
+          "state": "注册结果先进入 runtime，随后由 ExtensionRunner 绑定到 session",
+          "event": "resources_discover、session_start",
+          "failure": "项目未受信任时，项目级资源和扩展受到限制"
+        },
+        {
+          "number": "02",
+          "title": "输入阶段",
+          "actor": "input / before_agent_start",
+          "source": "packages/coding-agent/src/core/agent-session.ts:L1139-L1260",
+          "input": "原始文本、图片和输入来源",
+          "action": "input 可 handled 或 transform；before_agent_start 可注入 custom messages 并替换本轮 system prompt。",
+          "output": "本轮最终 AgentMessage[] 与 system prompt",
+          "state": "可能完全消费输入，或只影响当前 turn",
+          "event": "input、before_agent_start",
+          "failure": "多个 systemPrompt 结果按 runner 规则链式应用，需避免扩展顺序依赖"
+        },
+        {
+          "number": "03",
+          "title": "上下文和 Provider 阶段",
+          "actor": "context / provider hooks",
+          "source": "packages/coding-agent/src/core/extensions/runner.ts:L984-L1078",
+          "input": "AgentMessage[]、请求体、headers、Provider 响应",
+          "action": "可过滤或注入上下文，修改 Provider 请求、headers，并观察响应元数据。",
+          "output": "实际发送给模型的请求",
+          "state": "这些变换通常不自动写回 session，除非扩展显式追加 entry",
+          "event": "context、before_provider_request、before_provider_headers、after_provider_response",
+          "failure": "修改 Provider payload 属于协议敏感点，需要按具体 Provider 验证"
+        },
+        {
+          "number": "04",
+          "title": "工具前后阶段",
+          "actor": "tool_call / tool_result",
+          "source": "packages/coding-agent/src/core/extensions/runner.ts:L877-L983",
+          "input": "工具名称、参数、结果和错误标记",
+          "action": "tool_call 可 block；tool_result 可替换模型看到的结果。",
+          "output": "允许执行的调用和最终 ToolResultMessage",
+          "state": "工具真实副作用与模型可见结果是两个不同边界",
+          "event": "tool_execution_start/update/end、tool_call、tool_result",
+          "failure": "后置修改不能撤销已经发生的文件或外部修改"
+        },
+        {
+          "number": "05",
+          "title": "会话树和压缩阶段",
+          "actor": "session hooks",
+          "source": "packages/coding-agent/src/core/extensions/types.ts:L563-L647",
+          "input": "switch、fork、tree navigation、compaction 数据",
+          "action": "在切换、分支、导航和压缩前取消或自定义；完成后接收结果。",
+          "output": "自定义 session 生命周期行为",
+          "state": "可通过 custom entry 持久化扩展自己的状态",
+          "event": "session_before_switch/fork/tree/compact、session_tree、session_compact",
+          "failure": "扩展状态必须自行版本化；核心只保存 opaque data"
+        },
+        {
+          "number": "06",
+          "title": "界面与命令阶段",
+          "actor": "ExtensionAPI + InteractiveMode",
+          "source": "packages/coding-agent/src/core/extensions/types.ts:L1191-L1519",
+          "input": "命令、快捷键、widget、status、custom editor",
+          "action": "扩展可注册 slash command、快捷键、工具、Provider 和 TUI 组件。",
+          "output": "不修改核心即可扩展的产品能力",
+          "state": "UI 状态属于当前 InteractiveMode，不自动进入模型上下文",
+          "event": "共享 event bus 和 UI callbacks",
+          "failure": "RPC/print 模式没有完整交互 UI，扩展必须考虑运行模式差异"
+        },
+        {
+          "number": "07",
+          "title": "关闭与重载",
+          "actor": "ExtensionRunner lifecycle",
+          "source": "packages/coding-agent/src/core/extensions/runner.ts:L189-L223",
+          "input": "quit、reload、new、resume 或 fork",
+          "action": "先发 session_shutdown，再使旧 extension runtime 失效，随后绑定新 runtime。",
+          "output": "没有悬挂旧 handler 的新会话环境",
+          "state": "旧 ExtensionAPI 变成 stale，资源重新发现",
+          "event": "session_shutdown → resources_discover → session_start",
+          "failure": "缓存旧 API 引用的扩展会在 runtime 替换后失效"
+        }
+      ]
+    },
+    {
+      "id": "session-tree",
+      "number": "05",
+      "name": "会话分支与恢复",
+      "summary": "当前 SessionManager 用 append-only JSONL + parentId 表示树；切换 leaf 就能重建另一条对话路径。",
+      "question": "为什么分支不需要复制和删除原来的消息？",
+      "status": "当前主链",
+      "steps": [
+        {
+          "number": "01",
+          "title": "Session Header 定义文件身份",
+          "actor": "SessionManager",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L28-L44",
+          "input": "session id、cwd、timestamp、可选 parentSession",
+          "action": "JSONL 第一行写 header；后续每一行都是独立 entry。",
+          "output": "可枚举和恢复的 session 文件",
+          "state": "CURRENT_SESSION_VERSION=3",
+          "event": "session_start",
+          "failure": "旧版本 header 允许缺少 version，需要兼容读取"
+        },
+        {
+          "number": "02",
+          "title": "每条 entry 形成树节点",
+          "actor": "_appendEntry",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L1044-L1066",
+          "input": "type、id、parentId、timestamp 和业务字段",
+          "action": "把 entry 追加到文件、数组和 byId 索引，并将 leafId 更新为新节点。",
+          "output": "append-only 树的新叶子",
+          "state": "旧节点不变，parentId 保存因果路径",
+          "event": "不同 entry 由各自上层事件触发",
+          "failure": "append-only 不等于线性历史；同一个 parent 可以有多个 children"
+        },
+        {
+          "number": "03",
+          "title": "分支只移动 leaf",
+          "actor": "SessionManager.branch",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L1355-L1404",
+          "input": "要回到的 entry id",
+          "action": "验证节点存在，把 leafId 移到旧节点；下一条 append 自动形成新分支。",
+          "output": "同一文件内的新对话路径",
+          "state": "被放弃的旧后缀仍保留在树中",
+          "event": "session_before_tree/session_tree 或 fork 相关事件",
+          "failure": "无效 id 会抛错；branch summary 是可选的另一条追加 entry"
+        },
+        {
+          "number": "04",
+          "title": "沿 leaf 回溯活动路径",
+          "actor": "buildSessionPath",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L298-L374",
+          "input": "全部 entries、leafId、byId",
+          "action": "从 leaf 沿 parentId 回到 root，再反转为时间顺序。",
+          "output": "当前分支的线性路径",
+          "state": "树结构被投影成一次模型调用需要的单一路径",
+          "event": "读取操作，无事件",
+          "failure": "标签和自定义 metadata 不一定进入 LLM Context"
+        },
+        {
+          "number": "05",
+          "title": "恢复模型、思考级别和消息",
+          "actor": "buildSessionContext",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L461-L474",
+          "input": "活动路径和 compaction 规则",
+          "action": "解析最近的 model/thinking 变化，把 message、custom_message、summary 转成 AgentMessage。",
+          "output": "messages + thinkingLevel + model",
+          "state": "这是从持久化历史恢复运行态的关键边界",
+          "event": "resume 时由 runtime/session 组装层消费",
+          "failure": "custom entry 和 label 不参与模型上下文"
+        },
+        {
+          "number": "06",
+          "title": "fork 创建新的文件身份",
+          "actor": "SessionManager.forkFrom",
+          "source": "packages/coding-agent/src/core/session-manager.ts:L1579-L1635",
+          "input": "源 session、目标 entry 和新目录",
+          "action": "复制所选路径到新 session，生成新 id，并在 header 记录 parentSession。",
+          "output": "可独立继续的 session 文件",
+          "state": "与 branch 的同文件树不同，fork 是跨文件派生",
+          "event": "session_before_fork、session_shutdown、session_start(reason=fork)",
+          "failure": "空文件或缺少合法 header 时不能 fork"
+        }
+      ]
+    }
+  ],
+  "stateMatrix": [
+    {"name":"AgentState","owner":"Agent","scope":"单个进程/当前 Agent","reads":"agent-loop、UI、订阅者","writes":"Agent.processEvents、setModel/setTools 等","persistence":"不直接持久化","evidence":"packages/agent/src/agent.ts; packages/agent/src/types.ts"},
+    {"name":"Streaming message","owner":"AgentState","scope":"一次 Provider 响应","reads":"TUI、事件监听器","writes":"message_start/update/end","persistence":"只有 final message 持久化","evidence":"packages/agent/src/agent.ts:L540-L579"},
+    {"name":"Steer / Follow-up queues","owner":"Agent","scope":"当前 active run","reads":"agent-loop 内外层循环","writes":"AgentSession.prompt 的 streamingBehavior","persistence":"当前主链不跨进程","evidence":"packages/agent/src/agent-loop.ts:L155-L274"},
+    {"name":"LLM Context","owner":"agent-loop","scope":"一次模型请求","reads":"Provider","writes":"transformContext + convertToLlm","persistence":"从 session 重建，不单独保存","evidence":"packages/agent/src/agent-loop.ts:L281-L308"},
+    {"name":"JSONL transcript tree","owner":"SessionManager","scope":"跨进程/单个 session 文件","reads":"resume、tree、export、compaction","writes":"appendXXX + branch/fork","persistence":"追加式 JSONL","evidence":"packages/coding-agent/src/core/session-manager.ts"},
+    {"name":"Compaction checkpoint","owner":"SessionManager + compaction","scope":"当前分支后续上下文","reads":"buildContextEntries","writes":"appendCompaction","persistence":"JSONL compaction entry","evidence":"packages/coding-agent/src/core/compaction; session-manager.ts:L411-L474"},
+    {"name":"Project knowledge","owner":"ResourceLoader","scope":"cwd 与资源 reload 周期","reads":"system prompt、skills、commands、extensions","writes":"用户/项目文件与 package sources","persistence":"AGENTS/SYSTEM/skills/prompts 等文件","evidence":"packages/coding-agent/src/core/resource-loader.ts"},
+    {"name":"Preferences / trust / auth","owner":"SettingsManager 等","scope":"全局或项目","reads":"产品编排与 ModelRuntime","writes":"设置命令、trust 和 login 流程","persistence":"配置与 credential store","evidence":"packages/coding-agent/src/core/settings-manager.ts; packages/ai/src/auth"},
+    {"name":"Durable Entry/Record/Lane","owner":"SessionRepo","scope":"跨进程、可恢复操作","reads":"未来 AgentHarness","writes":"SessionStorage / SQLite backend","persistence":"内存或 SQLite","evidence":"packages/agent/src/harness/session/types.ts; packages/session-backends/sqlite-node/src"},
+    {"name":"长期语义记忆","owner":"核心未提供","scope":"预期跨 session","reads":"需要自行设计召回层","writes":"需要事实抽取、更新、遗忘策略","persistence":"未在 pi core 实现","evidence":"架构缺口：现有 session search/facts 不等于完整语义记忆"}
+  ],
+  "sessionEntries": [
+    {"type":"message","purpose":"保存 user、assistant、toolResult 等 AgentMessage","context":"进入","writtenBy":"AgentSession 在 message_end 时 appendMessage"},
+    {"type":"thinking_level_change","purpose":"记录思考级别变化","context":"影响恢复设置","writtenBy":"setThinkingLevel 路径"},
+    {"type":"model_change","purpose":"记录 provider/model 选择变化","context":"影响恢复设置","writtenBy":"模型选择与循环切换"},
+    {"type":"compaction","purpose":"保存摘要、firstKeptEntryId、tokensBefore 和 usage","context":"作为摘要进入，并改变保留边界","writtenBy":"手动或自动 compaction"},
+    {"type":"branch_summary","purpose":"概括离开的旧分支","context":"作为 branch summary message 进入","writtenBy":"branchWithSummary / tree workflow"},
+    {"type":"custom","purpose":"扩展自己的持久化 opaque data","context":"不进入","writtenBy":"ExtensionAPI.appendEntry"},
+    {"type":"custom_message","purpose":"扩展注入模型上下文的内容","context":"转换成 user/custom message 进入","writtenBy":"before_agent_start 或 appendCustomMessage"},
+    {"type":"label","purpose":"给任意 entry 添加/移除书签标签","context":"不进入","writtenBy":"SessionManager.appendLabelChange"},
+    {"type":"session_info","purpose":"保存用户可读 session 名称","context":"不进入","writtenBy":"SessionManager.appendSessionInfo"}
+  ],
+  "extensionLifecycle": [
+    {"stage":"发现","hooks":"project_trust · resources_discover","can":"控制项目资源信任，补充 extension/skill/prompt/theme 路径","control":"可影响资源集合","source":"extensions/types.ts:L1198-L1200"},
+    {"stage":"会话启动","hooks":"session_start · session_info_changed","can":"初始化扩展状态，读取当前 session 信息","control":"观察/追加状态","source":"extensions/types.ts:L1200-L1201"},
+    {"stage":"输入","hooks":"input","can":"handled、transform 文本或图片","control":"可完全消费输入","source":"agent-session.ts:L1139-L1161"},
+    {"stage":"运行前","hooks":"before_agent_start","can":"注入 custom messages、替换本轮 system prompt","control":"可改变本轮上下文","source":"agent-session.ts:L1232-L1260"},
+    {"stage":"上下文","hooks":"context","can":"过滤、重排或注入 AgentMessage[]","control":"可改变模型可见历史","source":"extensions/runner.ts:L984-L1020"},
+    {"stage":"Provider","hooks":"before_provider_request · before_provider_headers · after_provider_response","can":"修改请求/headers，观察响应","control":"协议敏感","source":"extensions/runner.ts:L1021-L1078"},
+    {"stage":"Agent 事件","hooks":"agent/turn/message start/update/end · agent_settled","can":"观察流式生命周期和稳定时点","control":"主要观察；部分 end 事件可触发后续动作","source":"extensions/types.ts:L1222-L1230"},
+    {"stage":"工具","hooks":"tool_call · tool_result · tool_execution_*","can":"阻止调用、替换结果、观察进度","control":"前置可取消，后置可改模型可见结果","source":"extensions/types.ts:L1231-L1237"},
+    {"stage":"压缩","hooks":"session_before_compact · session_compact","can":"取消、替换 summary/details，观察结果","control":"可接管压缩结果","source":"extensions/types.ts:L591-L611"},
+    {"stage":"树操作","hooks":"session_before_switch/fork/tree · session_tree","can":"取消或自定义切换、分支和导航摘要","control":"可影响 session 路径","source":"extensions/types.ts:L579-L647"},
+    {"stage":"关闭/替换","hooks":"session_shutdown","can":"在 quit/reload/new/resume/fork 前清理资源","control":"旧 runtime 随后失效","source":"extensions/types.ts:L615-L618"}
+  ],
+  "maturityAtlas": [
+    {"level":"A","label":"当前产品主链","meaning":"CLI 默认路径实际依赖，可通过现有运行模式和测试观察","items":"AgentSession、Agent/agent-loop、pi-ai Providers、JSONL SessionManager、TUI、内置工具","evidence":"coding-agent main/sdk + agent + ai + tui"},
+    {"level":"B","label":"公开扩展能力","meaning":"已由 ExtensionAPI/SDK 暴露，适合在不修改核心时复用","items":"commands、tools、hooks、providers、skills、prompts、themes、widgets","evidence":"coding-agent extensions/types.ts + examples"},
+    {"level":"C","label":"独立可用但非默认主链","meaning":"模块本身可运行，但不是当前本地 Interactive CLI 的必经路径","items":"RPC JSONL mode、print/JSON mode、SDK、pi-evals","evidence":"coding-agent modes + evals"},
+    {"level":"D","label":"实验远程路线","meaning":"协议、client、server 和 transport 已存在，产品整合仍在演进","items":"pi-protocol、pi-client、pi-server、experimental remote CLI","evidence":"packages/protocol/client/server READMEs 与源码"},
+    {"level":"E","label":"v2 scaffold","meaning":"durable 数据契约和 backend 已成形，但核心执行操作未实现","items":"AgentHarness、Entry/Record/Lane、SessionRepo、SQLite backend","evidence":"AgentHarness.prompt/compact/resume 等返回 HarnessNotImplemented"},
+    {"level":"F","label":"核心未提供","meaning":"后续开发自己的 Agent 时需要单独设计或通过扩展/外部服务实现","items":"跨 session 事实抽取、embedding 召回、重要性、冲突更新、遗忘、用户画像","evidence":"现有 session facts/search 不能组成完整长期语义记忆闭环"}
+  ],
+  "evidenceIndex": [
+    {"question":"程序从哪里启动并选择运行模式？","sources":["packages/coding-agent/src/main.ts","packages/coding-agent/src/cli/args.ts"],"why":"确认 interactive/print/json/rpc/remote 的产品入口","level":"入口"},
+    {"question":"AgentSession 是怎样组装出来的？","sources":["packages/coding-agent/src/core/sdk.ts","packages/coding-agent/src/core/agent-session-services.ts"],"why":"理解模型、工具、资源、设置和 SessionManager 的依赖注入","level":"组装"},
+    {"question":"一次 prompt 做了哪些产品级预处理？","sources":["packages/coding-agent/src/core/agent-session.ts:L1116-L1269"],"why":"输入 hook、template、认证、压缩和 system prompt 都在此汇合","level":"编排"},
+    {"question":"模型—工具—模型循环在哪里？","sources":["packages/agent/src/agent-loop.ts:L155-L274"],"why":"这是 Agent 与普通单次聊天调用的核心区别","level":"运行时"},
+    {"question":"工具如何验证、并发、取消和回写？","sources":["packages/agent/src/agent-loop.ts:L411-L790","packages/coding-agent/src/core/tools"],"why":"理解副作用、错误和 ToolResultMessage 边界","level":"工具"},
+    {"question":"多 Provider 怎样被统一？","sources":["packages/ai/src/models.ts","packages/ai/src/providers","packages/ai/src/types.ts"],"why":"区分模型目录、认证、路由和规范化流事件","level":"模型"},
+    {"question":"消息在什么时候真正持久化？","sources":["packages/coding-agent/src/core/agent-session.ts:L609-L684","packages/coding-agent/src/core/session-manager.ts:L1044-L1188"],"why":"确认事件流和 JSONL 写入边界","level":"会话"},
+    {"question":"分支和压缩后模型看见什么？","sources":["packages/coding-agent/src/core/session-manager.ts:L298-L474","packages/coding-agent/src/core/compaction/compaction.ts"],"why":"区分完整 transcript 与 active LLM Context","level":"记忆"},
+    {"question":"扩展能在哪些阶段改变行为？","sources":["packages/coding-agent/src/core/extensions/types.ts:L543-L1239","packages/coding-agent/src/core/extensions/runner.ts"],"why":"决定后续开发应使用扩展还是修改核心","level":"扩展"},
+    {"question":"TUI 为什么能流式更新而不是整屏重画？","sources":["packages/tui/src/tui.ts","packages/coding-agent/src/modes/interactive/interactive-mode.ts"],"why":"理解组件树、焦点、差量渲染和 Agent 事件映射","level":"呈现"},
+    {"question":"远程协议与本地 RPC 有什么不同？","sources":["packages/coding-agent/src/modes/rpc","packages/protocol/src","packages/client/src","packages/server/src"],"why":"避免把 LF-JSONL 进程控制和 CBOR 远程 Session 混为一谈","level":"远程"},
+    {"question":"durable v2 已经完成到哪里？","sources":["packages/agent/src/harness/session/types.ts","packages/agent/src/harness/agent-harness.ts","packages/session-backends/sqlite-node/src"],"why":"区分成熟的数据契约、可用存储与未实现执行器","level":"演进"}
+  ],
+  "agentDevelopmentGuide": {
+    "thesis": "先决定复用深度，再设计自己的产品能力。不要从复制整个 coding-agent 开始，也不要把尚未完成的 AgentHarness v2 当成现成运行时。",
+    "routes": [
+      {
+        "id": "sdk",
+        "number": "01",
+        "name": "基于 coding-agent SDK",
+        "fit": "最快做出拥有 pi 会话、工具、扩展和模型能力的 Agent 产品",
+        "reuse": "createAgentSession、AgentSession、SessionManager、ModelRuntime、内置工具、ExtensionAPI",
+        "own": "业务 system prompt、专用工具、扩展、界面和长期记忆层",
+        "tradeoff": "复用最多、落地最快，但会继承 coding-agent 的产品策略和 JSONL Session 模型",
+        "start": "packages/coding-agent/src/core/sdk.ts → agent-session.ts → examples/sdk"
+      },
+      {
+        "id": "core",
+        "number": "02",
+        "name": "组合 agent-core + pi-ai",
+        "fit": "需要自己的产品编排、Web UI 或不同于 coding-agent 的 Session 策略",
+        "reuse": "Agent、runAgentLoop、AgentEvent、AgentTool、Models、Provider 和统一流事件",
+        "own": "AgentSession 等价编排层、会话持久化、重试/压缩策略、资源系统和 UI",
+        "tradeoff": "控制力更高，也必须自己维护更多状态和产品不变量",
+        "start": "packages/agent/src/agent.ts → agent-loop.ts → packages/ai/src/models.ts"
+      },
+      {
+        "id": "durable",
+        "number": "03",
+        "name": "观察 durable v2，暂不依赖",
+        "fit": "研究崩溃恢复、多 Lane、远程 Session 和可查询操作日志的未来方向",
+        "reuse": "SessionRepo、Entry/Record/Lane contract、内存/SQLite backend 的数据模型",
+        "own": "当前仍需使用旧主链或自行补齐执行器；不能直接调用未实现的 AgentHarness 操作",
+        "tradeoff": "数据契约先进，但 prompt/compact/resume/steer/createLane 等关键路径尚未接通",
+        "start": "packages/agent/src/harness/session/types.ts → agent-harness.ts → session-backends/sqlite-node"
+      }
+    ],
+    "capabilities": [
+      {"layer":"模型访问","piProvides":"pi-ai Models、Provider、认证、模型目录、统一 stream events","youOwn":"选择模型、成本/延迟策略、业务降级","read":"packages/ai/src/models.ts","decision":"优先复用"},
+      {"layer":"Agent 循环","piProvides":"Agent、runAgentLoop、工具循环、steer/follow-up、AbortSignal","youOwn":"终止条件、业务 guardrail、任务级编排","read":"packages/agent/src/agent-loop.ts","decision":"优先复用"},
+      {"layer":"工具系统","piProvides":"AgentTool contract、schema 校验、并发策略、进度和错误事件","youOwn":"领域工具、权限、幂等、审计和副作用回滚","read":"packages/agent/src/types.ts; coding-agent/src/core/tools","decision":"复用契约，自研工具"},
+      {"layer":"产品编排","piProvides":"AgentSession、重试、压缩、模型/资源/扩展组合","youOwn":"若走 core 路线，必须自己实现这一层","read":"packages/coding-agent/src/core/agent-session.ts","decision":"按路线选择"},
+      {"layer":"会话历史","piProvides":"当前 JSONL append-only tree、branch/fork、compaction context","youOwn":"数据治理、迁移、多人协作和业务 metadata","read":"packages/coding-agent/src/core/session-manager.ts","decision":"当前可复用"},
+      {"layer":"长期记忆","piProvides":"session 历史、custom entries、资源文件；v2 有 facts/search 原语","youOwn":"事实抽取、索引、召回、冲突更新、遗忘、权限和评估","read":"research/pi-deep-dive-notes.md#7","decision":"必须自研"},
+      {"layer":"扩展与 UI","piProvides":"ExtensionAPI、commands/tools/hooks/widgets、pi-tui 和 AgentEvent","youOwn":"业务交互、Web/移动界面、权限反馈和可观测性","read":"coding-agent/src/core/extensions/types.ts; packages/tui/src/tui.ts","decision":"复用事件边界"},
+      {"layer":"远程与持久化 v2","piProvides":"protocol/client/server、SessionRepo、SQLite backend","youOwn":"服务实现、鉴权、多租户、部署和当前执行主链集成","read":"packages/protocol; packages/server; packages/agent/src/harness","decision":"观察，不作为起点"}
+    ],
+    "learningPath": [
+      {"number":"01","name":"先掌握最小闭环","goal":"能口述 prompt → model → tool → model → session 的完整链路","files":"agent-session.ts、agent.ts、agent-loop.ts"},
+      {"number":"02","name":"再掌握可扩展边界","goal":"知道业务能力应该放在 tool、hook、Provider 还是产品编排层","files":"extensions/types.ts、runner.ts、examples/extensions"},
+      {"number":"03","name":"然后理解状态与记忆","goal":"区分 AgentState、Context、JSONL transcript、compaction 与长期记忆","files":"session-manager.ts、compaction/、resource-loader.ts"},
+      {"number":"04","name":"最后设计自己的 Agent","goal":"选择 SDK 或 core 路线，画出模型/循环/工具/会话/记忆/UI 六层边界","files":"先写架构决策记录，再开始业务代码"}
+    ],
+    "pitfalls": [
+      "不要复制整个 coding-agent 后再删功能；先选择 SDK 复用或 core 组合路线。",
+      "不要把完整 Session 历史直接塞给模型；Context 必须有预算、压缩和召回策略。",
+      "不要把工具执行成功等同于业务操作安全；权限、幂等、审计和回滚属于应用层。",
+      "不要把 AgentEvent 当成持久化事实；只有明确写入 Session 或业务存储的数据才能恢复。",
+      "不要现在依赖 AgentHarness v2 执行路径；先观察其 contract，等关键方法真正实现和接入。"
+    ]
+  },
+  "glossary": [
+    {"term":"AgentSession","meaning":"coding-agent 的产品编排对象，连接 Agent、SessionManager、扩展、设置、模型和运行策略。"},
+    {"term":"Agent","meaning":"与 UI 解耦的运行状态机，持有当前模型、工具、消息和流式状态。"},
+    {"term":"agent-loop","meaning":"执行模型—工具—模型循环的纯运行核心。"},
+    {"term":"AgentMessage","meaning":"应用层消息；在调用 Provider 前由 convertToLlm 转成标准模型消息。"},
+    {"term":"SessionEntry","meaning":"当前 JSONL session 中带 id、parentId、timestamp 的追加式树节点。"},
+    {"term":"leafId","meaning":"当前活动分支的最后一个 entry；改变 leaf 就改变恢复出来的路径。"},
+    {"term":"Compaction","meaning":"把旧历史总结成 checkpoint，同时保留最近尾部；不会删除原始 JSONL。"},
+    {"term":"Steer","meaning":"在 active run 中尽快注入、影响接下来一轮的排队消息。"},
+    {"term":"Follow-up","meaning":"等当前 Agent 本可结束时，再启动后续 turn 的排队消息。"},
+    {"term":"Provider","meaning":"pi-ai 中拥有模型目录、认证和 streamSimple 实现的具体模型运行单元。"},
+    {"term":"SessionRepo","meaning":"durable v2 的会话仓储接口，负责 create/open/list/delete/fork。"},
+    {"term":"Lane / Record","meaning":"v2 用 Lane 表示并行会话视图，用 Record 记录运行、队列、工具和 usage 操作日志。"}
+  ]
+}

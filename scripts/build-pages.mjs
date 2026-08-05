@@ -56,6 +56,9 @@ const renderProjectCard = (project, repositoryUrl) => {
   const upstreamLink = project.upstreamUrl
     ? `<a class="button secondary" href="${escapeHtml(project.upstreamUrl)}">查看原始资料</a>`
     : "";
+  const researchTargetLink = project.researchTargetUrl
+    ? `<a class="button secondary" href="${escapeHtml(project.researchTargetUrl)}">查看研究目标库</a>`
+    : "";
 
   return `
       <article class="project">
@@ -66,6 +69,7 @@ const renderProjectCard = (project, repositoryUrl) => {
           <a class="button" href="${projectUrl}">进入项目</a>
           <a class="button secondary" href="${escapeHtml(repositoryUrlForProject)}">查看项目资料</a>
           ${upstreamLink}
+          ${researchTargetLink}
         </div>
       </article>`;
 };

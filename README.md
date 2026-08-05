@@ -6,7 +6,7 @@
 
 | 项目 | 状态 | 说明 | 入口 |
 | --- | --- | --- | --- |
-| [OPC Methodology 研读台](./opc-methodology-study/) | 第 01 个项目 | 面向《OPC Methodology》的章节导读、方法论分析、Skills 梳理与个人学习记录 | [项目说明](./opc-methodology-study/README.md) · [上游资料](https://github.com/easychen/opc-methodology) · 在线站点将在部署完成后补充 |
+| [OPC Methodology 研读台](./opc-methodology-study/) | 第 01 个项目 | 面向《OPC Methodology》的章节导读、方法论分析、Skills 梳理与个人学习记录 | [项目说明](./opc-methodology-study/README.md) · [上游资料](https://github.com/easychen/opc-methodology) · [在线研读站](https://yydshly-opc-study.yydshly.chatgpt.site)（仅本人可访问） |
 
 ## 研究项目约定
 

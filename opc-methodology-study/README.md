@@ -17,7 +17,7 @@ opc-methodology-study/
 
 ## 在线访问
 
-站点会以仅自己可访问的方式部署；完成后，仓库首页会在项目导航中提供正式链接。
+[打开在线研读站](https://yydshly-opc-study.yydshly.chatgpt.site)（当前仅本人可访问）。仓库首页也会在项目导航中保留该入口。
 
 ## 本地运行
 

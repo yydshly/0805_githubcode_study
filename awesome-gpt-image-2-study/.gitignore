@@ -1,0 +1,4 @@
+upstream/awesome-gpt-image-2/
+node_modules/
+.env
+.env.local

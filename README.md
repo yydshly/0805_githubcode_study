@@ -7,6 +7,7 @@
 | 项目 | 状态 | 说明 | 入口 |
 | --- | --- | --- | --- |
 | [OPC Methodology 研读台](./opc-methodology-study/) | 第 01 个项目 | 面向《OPC Methodology》的章节导读、方法论分析、Skills 梳理与个人学习记录 | [项目说明](./opc-methodology-study/README.md) · [上游资料](https://github.com/easychen/opc-methodology) · [在线研读站](https://yydshly.github.io/0805_githubcode_study/opc-methodology-study/) |
+| [Awesome GPT Image 2 研究](./awesome-gpt-image-2-study/) | 第 02 个项目 · 研究演示 | 拆解案例库、结构化 Prompt、Agent Skill 与在线生图产品，验证其可控性和跨模型迁移价值 | [项目说明](./awesome-gpt-image-2-study/README.md) · [在线研究站](https://yydshly.github.io/0805_githubcode_study/awesome-gpt-image-2-study/) · [上游资料](https://github.com/freestylefly/awesome-gpt-image-2) |
 
 ## 研究项目约定
 

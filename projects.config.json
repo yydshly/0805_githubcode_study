@@ -12,6 +12,16 @@
       "siteDirectory": "opc-methodology-study/site",
       "repositoryDirectory": "opc-methodology-study",
       "upstreamUrl": "https://github.com/easychen/opc-methodology"
+    },
+    {
+      "slug": "awesome-gpt-image-2-study",
+      "order": 2,
+      "status": "研究演示",
+      "title": "Awesome GPT Image 2 研究",
+      "summary": "拆解案例库、Prompt-as-Code、Agent Skill 与在线生成产品，并通过新品茶饮场景演示如何把业务需求编译为可复用 Prompt。",
+      "siteDirectory": "awesome-gpt-image-2-study/site",
+      "repositoryDirectory": "awesome-gpt-image-2-study",
+      "upstreamUrl": "https://github.com/freestylefly/awesome-gpt-image-2"
     }
   ]
 }

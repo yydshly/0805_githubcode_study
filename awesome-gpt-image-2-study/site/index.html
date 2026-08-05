@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Awesome GPT Image 2 研究展示站：理解案例库、Prompt-as-Code、Agent Skill，并通过真实业务场景学习如何应用。"
+    />
+    <meta name="theme-color" content="#f2efe7" />
+    <title>Awesome GPT Image 2 · 能力研究与实战</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./catalog-data.js?v=5" defer></script>
+    <script src="./app.js?v=4" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="返回页面顶部">
+        <span class="brand-mark" aria-hidden="true">A2</span>
+        <span>
+          <strong>GPT Image 2 Lab</strong>
+          <small>研究项目 02</small>
+        </span>
+      </a>
+      <nav aria-label="页面导航">
+        <a href="#capabilities">能力地图</a>
+        <a href="#library">模板案例</a>
+        <a href="#demo">场景实验</a>
+        <a href="#experiment">生成对照</a>
+        <a href="#apply">应用指南</a>
+      </nav>
+      <a class="repo-link" href="https://github.com/freestylefly/awesome-gpt-image-2">查看上游 ↗</a>
+    </header>
+
+    <main id="main">
+      <section class="hero section-shell" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow"><span>Research 02</span> Prompt as Code</p>
+          <h1>把灵感，<br /><em>编译</em>成可复用的图像协议。</h1>
+          <p class="hero-lead">
+            这个库不训练新模型。你可以从真实案例和模板理解“别人怎么写”，再把需要的规则沉淀为自己的 Skill 配方，供后续任务重复使用。
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#library">入口一 · 看真实案例 <span aria-hidden="true">↓</span></a>
+            <a class="button button-quiet" href="#demo">入口二 · 沉淀 Skill</a>
+          </div>
+          <dl class="hero-stats" aria-label="研究快照">
+            <div><dt>517</dt><dd>案例</dd></div>
+            <div><dt>22</dt><dd>模板</dd></div>
+            <div><dt>13</dt><dd>能力类别</dd></div>
+            <div><dt>6</dt><dd>Prompt 模块</dd></div>
+          </dl>
+        </div>
+
+        <div class="compiler-card" aria-label="Prompt 编译流程示意">
+          <div class="compiler-head">
+            <span class="status-dot"></span>
+            <span>prompt-compiler.flow</span>
+            <span class="compiler-status">READY</span>
+          </div>
+          <div class="compiler-flow">
+            <div class="flow-node flow-input">
+              <span class="node-index">01</span>
+              <div><small>自然语言需求</small><strong>“做一张新品茶饮海报”</strong></div>
+            </div>
+            <span class="flow-arrow" aria-hidden="true">↓</span>
+            <div class="flow-node">
+              <span class="node-index">02</span>
+              <div><small>语义路由</small><strong>商品 × 写实 × 商业</strong></div>
+            </div>
+            <span class="flow-arrow" aria-hidden="true">↓</span>
+            <div class="flow-node">
+              <span class="node-index">03</span>
+              <div><small>模板与案例</small><strong>商品商业视觉 · Case 373</strong></div>
+            </div>
+            <span class="flow-arrow" aria-hidden="true">↓</span>
+            <div class="flow-node flow-output">
+              <span class="node-index">04</span>
+              <div><small>生产级 Prompt</small><strong>主体 + 构图 + 材质 + 文字 + 比例 + 约束</strong></div>
+            </div>
+          </div>
+          <div class="compiler-note">
+            <span>核心变化</span>
+            <p>把“描述灵感”升级为“约束明确、可审查、可批量替换变量”的生成协议。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="definition-strip" aria-label="项目定义">
+        <div><span>它是</span><strong>视觉生成领域知识库</strong></div>
+        <div><span>它不是</span><strong>新模型或微调方案</strong></div>
+        <div><span>真正价值</span><strong>把 Prompt 变成可复用协议</strong></div>
+      </section>
+
+      <section class="content-section section-shell" id="capabilities">
+        <div class="section-intro">
+          <p class="section-number">01 / 能力展示</p>
+          <h2>一个库，四个彼此衔接的能力层</h2>
+          <p>从案例事实到最终生图，中间不是一句“帮我优化 Prompt”，而是有来源、有路由、有模板、有交付出口的工作流。</p>
+        </div>
+
+        <div class="layer-grid">
+          <article class="layer-card">
+            <span class="layer-label">DATA</span>
+            <h3>案例知识层</h3>
+            <p>图片、原始 Prompt、来源、类别、风格与场景标签，构成可检索的事实样本。</p>
+            <strong>517 cases</strong>
+          </article>
+          <article class="layer-card">
+            <span class="layer-label">PROTOCOL</span>
+            <h3>模板协议层</h3>
+            <p>把任务拆成字段，附带使用条件、参考案例、建议与常见陷阱。</p>
+            <strong>22 templates</strong>
+          </article>
+          <article class="layer-card">
+            <span class="layer-label">AGENT</span>
+            <h3>Skill 路由层</h3>
+            <p>指导 Agent 依次匹配类别、视觉风格、场景和最近案例，再组装完整 Prompt。</p>
+            <strong>semantic routing</strong>
+          </article>
+          <article class="layer-card">
+            <span class="layer-label">PRODUCT</span>
+            <h3>在线产品层</h3>
+            <p>提供浏览、筛选、复制、收藏与试生成；登录、额度和支付属于产品化扩展。</p>
+            <strong>gallery → generate</strong>
+          </article>
+        </div>
+
+        <div class="capability-explorer">
+          <div class="explorer-head">
+            <div>
+              <p class="micro-label">13 CATEGORY ROUTER</p>
+              <h3>点击一种输出，查看它会控制什么</h3>
+            </div>
+            <p><span id="categoryCount">13</span> 类能力 · 数据固定于研究提交</p>
+          </div>
+          <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="能力类别"></div>
+          <article class="capability-detail" id="capabilityDetail" tabindex="-1" aria-live="polite"></article>
+          <noscript>
+            <p class="noscript-note">启用 JavaScript 后可以浏览全部类别。核心范围包括 UI、信息图、海报、电商、品牌、建筑、摄影、插画、人物、叙事、古风、出版和特殊任务。</p>
+          </noscript>
+        </div>
+
+        <div class="six-blocks">
+          <div class="six-copy">
+            <p class="micro-label">THE SIX-BLOCK CONTRACT</p>
+            <h3>最终 Prompt 不靠堆形容词，而靠六类约束</h3>
+            <p>这些块构成最小可审查单位。更换产品、渠道或风格时，只替换对应变量，而不必重写整段需求。</p>
+          </div>
+          <ol class="block-list">
+            <li><span>01</span><div><strong>主体与任务</strong><small>画什么、为谁、解决什么</small></div></li>
+            <li><span>02</span><div><strong>构图与布局</strong><small>视角、层级、模块与留白</small></div></li>
+            <li><span>03</span><div><strong>风格与材质</strong><small>媒介、光线、质感与色彩</small></div></li>
+            <li><span>04</span><div><strong>文字与标签</strong><small>准确文案、字数与可读性</small></div></li>
+            <li><span>05</span><div><strong>比例与格式</strong><small>渠道、尺寸、画幅和输出</small></div></li>
+            <li><span>06</span><div><strong>限制与负面项</strong><small>明确不要什么、避免什么错误</small></div></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="content-section library-section section-shell" id="library">
+        <div class="section-intro library-intro">
+          <p class="section-number">02 / 模板与案例全景</p>
+          <h2>不是“有 517 个案例”，而是 517 条都能查、能读、能回到来源</h2>
+          <p>目录由上游固定提交 <code>76fcd0e6</code> 直接生成。你可以先看真实案例图和 Prompt，再用模板理解方法；图片从固定上游资源加载，仅作研究参考，商业使用仍需回到原始来源确认授权。</p>
+        </div>
+
+        <div class="catalog-proof" aria-label="目录数据范围">
+          <div><strong id="catalogTemplateTotal">22</strong><span>模板协议</span></div>
+          <div><strong id="catalogCaseTotal">517</strong><span>案例 Prompt</span></div>
+          <div><strong id="catalogCategoryTotal">13</strong><span>输出类别</span></div>
+          <div><strong id="catalogStyleTotal">19</strong><span>风格标签</span></div>
+          <p><span class="status-dot"></span> 上游快照已接入页面</p>
+        </div>
+
+        <div class="template-browser">
+          <aside class="template-index" aria-label="模板目录">
+            <div class="catalog-subhead">
+              <div><p class="micro-label">22 TEMPLATE PROTOCOLS</p><h3>先选解决问题的方法</h3></div>
+              <span id="templatePosition">1 / 22</span>
+            </div>
+            <div class="template-list" id="templateList" role="listbox" aria-label="模板列表"></div>
+          </aside>
+          <article class="template-detail" id="templateDetail" aria-live="polite" tabindex="-1"></article>
+        </div>
+
+        <div class="case-browser">
+          <div class="catalog-subhead case-browser-head">
+            <div><p class="micro-label">517 TRACEABLE CASES</p><h3>再查最接近的事实样本</h3></div>
+            <p><strong id="caseResultCount">517</strong> 条匹配</p>
+          </div>
+          <form class="catalog-filters" id="catalogFilters" role="search">
+            <label class="search-field" for="caseSearch"><span>搜索标题、Prompt 或编号</span><input id="caseSearch" type="search" placeholder="例如：包装、dashboard、Case 373" autocomplete="off" /></label>
+            <label for="caseCategory"><span>类别</span><select id="caseCategory"><option value="">全部类别</option></select></label>
+            <label for="caseStyle"><span>风格</span><select id="caseStyle"><option value="">全部风格</option></select></label>
+            <label for="caseScene"><span>场景</span><select id="caseScene"><option value="">全部场景</option></select></label>
+            <button class="filter-reset" id="resetCatalog" type="button">重置筛选</button>
+          </form>
+          <div class="case-grid" id="caseGrid" aria-live="polite"></div>
+          <div class="catalog-empty" id="catalogEmpty" hidden>
+            <strong>没有命中这个组合</strong>
+            <p>减少一个筛选条件，或只搜索一个主体词。</p>
+            <button type="button" id="emptyReset">清空条件</button>
+          </div>
+          <div class="case-pagination">
+            <p id="caseRange">显示 1–12 / 517</p>
+            <button type="button" id="loadMoreCases">再看 12 条</button>
+          </div>
+          <article class="case-inspector" id="caseInspector" aria-live="polite" tabindex="-1"></article>
+        </div>
+        <noscript><p class="noscript-note">目录交互需要 JavaScript。数据快照包含 22 个模板和 517 个案例；可直接前往上游仓库的 data 与 docs 目录阅读。</p></noscript>
+      </section>
+
+      <section class="demo-section" id="demo">
+        <div class="section-shell">
+          <div class="section-intro demo-intro">
+            <p class="section-number">03 / 多场景实验室</p>
+            <h2 id="demoTitle">商品：为新品茶饮做一张上市主视觉</h2>
+            <p id="demoDescription">用同一套“业务输入 → 模板路由 → 六段 Prompt”方法，切换商品、信息图、UI 与海报四类任务，观察真正需要变化的控制字段。</p>
+          </div>
+
+          <div class="scenario-switch" id="scenarioSwitch" role="tablist" aria-label="演示场景">
+            <button type="button" role="tab" aria-selected="true" class="is-selected" data-scenario="product"><span>01</span><strong>商品视觉</strong><small>识别、材质、卖点</small></button>
+            <button type="button" role="tab" aria-selected="false" data-scenario="info"><span>02</span><strong>信息图</strong><small>模块、关系、短标签</small></button>
+            <button type="button" role="tab" aria-selected="false" data-scenario="ui"><span>03</span><strong>UI 截图</strong><small>平台、状态、准确文字</small></button>
+            <button type="button" role="tab" aria-selected="false" data-scenario="poster"><span>04</span><strong>传播海报</strong><small>标题、主视觉、层级</small></button>
+          </div>
+
+          <div class="demo-workbench">
+            <form class="brief-panel" id="briefForm">
+              <div class="panel-heading">
+                <span class="panel-step">A</span>
+                <div><p>BUSINESS BRIEF</p><h3>填写业务变量</h3></div>
+              </div>
+              <div id="scenarioFields"></div>
+              <fieldset>
+                <legend>视觉调性</legend>
+                <div class="choice-row" id="toneChoices">
+                  <button type="button" class="choice is-selected" data-tone="fresh" aria-pressed="true">清透自然</button>
+                  <button type="button" class="choice" data-tone="premium" aria-pressed="false">高端商业</button>
+                  <button type="button" class="choice" data-tone="technical" aria-pressed="false">技术拆解</button>
+                </div>
+              </fieldset>
+              <p class="form-help">修改任一字段，右侧路由、构图预览与 Prompt 会实时更新。</p>
+            </form>
+
+            <div class="preview-panel">
+              <div class="panel-heading">
+                <span class="panel-step">B</span>
+                <div><p>TEACHING PREVIEW</p><h3>构图预演</h3></div>
+                <span class="simulation-badge">模拟预览</span>
+              </div>
+              <div class="poster-preview tone-fresh scenario-product" id="posterPreview"></div>
+              <p class="preview-disclaimer">这是用 HTML/CSS 表达的版式意图，不是模型生成图，也不代表最终画质。</p>
+            </div>
+          </div>
+
+          <div class="route-panel">
+            <div class="panel-heading">
+              <span class="panel-step">C</span>
+              <div><p>LIBRARY ROUTING</p><h3>为什么选择这条路径</h3></div>
+            </div>
+            <div class="route-chain" aria-label="模板选择路径">
+              <div><small>类别</small><strong id="routeCategory">商品与电商</strong></div><span>→</span>
+              <div><small>模板</small><strong id="routeTemplate">商品商业视觉</strong></div><span>→</span>
+              <div><small>风格</small><strong id="routeStyle">Product · Realistic</strong></div><span>→</span>
+              <div><small>场景</small><strong id="routeScene">Commerce · Food</strong></div><span>→</span>
+              <div><small>案例</small><strong id="routeCase">373 · 高端品牌英雄图</strong></div>
+            </div>
+            <div class="route-reason">
+              <p><strong>命中依据：</strong><span id="routeReason">任务同时要求商品识别、卖点表达和社媒传播，因此先锁定商品模板，再用写实材质与食品场景控制视觉。</span></p>
+              <p><strong>主要避坑：</strong><span id="routePitfall">不要让随机水果和装饰遮挡包装；包装文字与广告宣称必须精确、克制。</span></p>
+            </div>
+          </div>
+
+          <div class="prompt-panel">
+            <div class="prompt-head">
+              <div class="panel-heading">
+                <span class="panel-step">D</span>
+                <div><p>PROMPT OUTPUT</p><h3>从一句话到生产协议</h3></div>
+              </div>
+              <div class="prompt-actions">
+                <div class="segmented" role="tablist" aria-label="Prompt 格式">
+                  <button type="button" class="is-active" role="tab" aria-selected="true" data-prompt-mode="natural">自然语言</button>
+                  <button type="button" role="tab" aria-selected="false" data-prompt-mode="json">结构化 JSON</button>
+                </div>
+                <button type="button" class="copy-button" id="copyPrompt">复制 Prompt</button>
+              </div>
+            </div>
+            <div class="prompt-compare">
+              <div class="raw-prompt">
+                <span>原始需求</span>
+                <p id="rawPrompt">帮我为“雾岭青梅气泡茶”做一张宣传图。</p>
+                <small>问题：没有渠道、构图、文字、材质、比例和失败约束。</small>
+              </div>
+              <div class="compiled-prompt">
+                <span>模板编译后</span>
+                <pre><code id="promptOutput"></code></pre>
+              </div>
+            </div>
+            <p class="copy-status" id="copyStatus" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="explain-grid" aria-label="Prompt 六段解释">
+            <article><span>01</span><strong>主体</strong><p>产品名、受众、任务目标。</p></article>
+            <article><span>02</span><strong>构图</strong><p>主商品占比、信息层级和辅助物。</p></article>
+            <article><span>03</span><strong>风格</strong><p>色彩、光线、材质与摄影感。</p></article>
+            <article><span>04</span><strong>文字</strong><p>锁定标题和卖点，禁止占位文本。</p></article>
+            <article><span>05</span><strong>格式</strong><p>投放渠道、画幅和输出方向。</p></article>
+            <article><span>06</span><strong>负面项</strong><p>避免遮挡、乱码、过度道具和混搭。</p></article>
+          </div>
+
+          <section class="skill-builder" id="skillBuilder" aria-labelledby="skillBuilderTitle">
+            <div class="skill-builder-intro">
+              <div>
+                <p class="micro-label">SKILL RECIPE BUILDER</p>
+                <h3 id="skillBuilderTitle">把一次 Prompt，沉淀成以后还能用的 Skill 配方</h3>
+              </div>
+              <p>当前场景、业务字段、模板路由和检查规则会被整理成一份可复制、可保存的配方。它不是模型调用器，而是后续接入任何图像工具前的工作协议。</p>
+            </div>
+
+            <div class="skill-builder-grid">
+              <div class="skill-checklists">
+                <article>
+                  <span>01 · 先补问</span>
+                  <h4>缺什么就先问什么</h4>
+                  <ul id="skillQuestions"></ul>
+                </article>
+                <article>
+                  <span>02 · 生成前</span>
+                  <h4>编译 Prompt 前检查</h4>
+                  <ul id="skillBefore"></ul>
+                </article>
+                <article>
+                  <span>03 · 生成后</span>
+                  <h4>拿到结果后验收</h4>
+                  <ul id="skillAfter"></ul>
+                </article>
+              </div>
+
+              <div class="skill-recipe-panel">
+                <div class="skill-recipe-head">
+                  <label for="recipeName"><span>配方名称</span><input id="recipeName" maxlength="40" /></label>
+                  <div>
+                    <button type="button" class="copy-button" id="copySkillRecipe">复制配方</button>
+                    <button type="button" class="save-recipe" id="saveSkillRecipe">保存到本机</button>
+                  </div>
+                </div>
+                <pre><code id="skillRecipeOutput"></code></pre>
+                <p class="copy-status" id="skillRecipeStatus" role="status" aria-live="polite"></p>
+              </div>
+            </div>
+
+            <div class="saved-recipes">
+              <div><span class="micro-label">LOCAL RECIPE SHELF</span><strong>已沉淀的配方</strong><small>仅保存在当前浏览器，不上传服务器。</small></div>
+              <div id="savedRecipeList" aria-live="polite"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="experiment-section" id="experiment">
+        <div class="section-shell">
+          <div class="section-intro experiment-intro">
+            <p class="section-number">04 / 真实生成对照</p>
+            <h2>Prompt 变长不等于变好；真正变化的是控制权</h2>
+            <p>同一个“雾岭青梅气泡茶”任务，分别用短 Prompt、库的六段模板、带执行检查的 Skill Prompt 各生成一次。以下是一次样本的人工观察，不是模型能力的科学因果结论。</p>
+          </div>
+
+          <div class="experiment-method">
+            <div><span>固定任务</span><strong>产品名、标题、3 个卖点、3:4 小红书首图</strong></div>
+            <div><span>唯一变化</span><strong>Prompt 的结构、约束和检查方式</strong></div>
+            <div><span>观察维度</span><strong>文字 · 布局 · 风格 · 约束</strong></div>
+          </div>
+
+          <div class="experiment-grid">
+            <article class="experiment-card level-short">
+              <div class="experiment-label"><span>LEVEL 1</span><strong>短 Prompt</strong><small>一句需求</small></div>
+              <figure><img src="./assets/experiment-short.png" alt="短 Prompt 生成的雾岭青梅气泡茶广告样本" loading="lazy" /><figcaption>真实生成样本 · 未人工修图</figcaption></figure>
+              <div class="score-list" aria-label="短 Prompt 人工观察得分">
+                <div><span>文字准确</span><meter min="0" max="5" value="3">3/5</meter><strong>3</strong></div>
+                <div><span>布局控制</span><meter min="0" max="5" value="2">2/5</meter><strong>2</strong></div>
+                <div><span>风格匹配</span><meter min="0" max="5" value="2">2/5</meter><strong>2</strong></div>
+                <div><span>约束遵循</span><meter min="0" max="5" value="2">2/5</meter><strong>2</strong></div>
+              </div>
+              <p class="experiment-finding"><strong>观察：</strong>标题醒目，但模型自行改成塑料瓶、增加英文和额外文案；“想要什么”清楚，“不要什么”缺失。</p>
+              <details><summary>查看这档输入</summary><pre>帮我为“雾岭青梅气泡茶”做一张小红书新品宣传图，3:4 竖版，标题是“一口醒夏”，卖点是“0 糖、真果汁、冰爽气泡”。</pre></details>
+            </article>
+
+            <article class="experiment-card level-template">
+              <div class="experiment-label"><span>LEVEL 2</span><strong>六段模板</strong><small>库的核心能力</small></div>
+              <figure><img src="./assets/experiment-template.png" alt="六段模板 Prompt 生成的雾岭青梅气泡茶技术信息图样本" loading="lazy" /><figcaption>真实生成样本 · 未人工修图</figcaption></figure>
+              <div class="score-list" aria-label="六段模板人工观察得分">
+                <div><span>文字准确</span><meter min="0" max="5" value="5">5/5</meter><strong>5</strong></div>
+                <div><span>布局控制</span><meter min="0" max="5" value="5">5/5</meter><strong>5</strong></div>
+                <div><span>风格匹配</span><meter min="0" max="5" value="5">5/5</meter><strong>5</strong></div>
+                <div><span>约束遵循</span><meter min="0" max="5" value="4">4/5</meter><strong>4</strong></div>
+              </div>
+              <p class="experiment-finding"><strong>观察：</strong>画幅、单罐、技术图风格、主标题、产品名和三个卖点均命中；仍出现未定义编号标注，说明模板不能消除模型自由发挥。</p>
+              <details><summary>查看这档输入结构</summary><pre>主体与任务 → 构图与布局 → 视觉风格与材质 → 文字与标签 → 比例与输出 → 限制与负面项</pre></details>
+            </article>
+
+            <article class="experiment-card level-skill">
+              <div class="experiment-label"><span>LEVEL 3</span><strong>Skill Prompt</strong><small>模板 + 执行检查</small></div>
+              <figure><img src="./assets/experiment-skill.png" alt="Skill Prompt 生成的雾岭青梅气泡茶技术信息图样本" loading="lazy" /><figcaption>真实生成样本 · 未人工修图</figcaption></figure>
+              <div class="score-list" aria-label="Skill Prompt 人工观察得分">
+                <div><span>文字准确</span><meter min="0" max="5" value="4">4/5</meter><strong>4</strong></div>
+                <div><span>布局控制</span><meter min="0" max="5" value="5">5/5</meter><strong>5</strong></div>
+                <div><span>风格匹配</span><meter min="0" max="5" value="5">5/5</meter><strong>5</strong></div>
+                <div><span>约束遵循</span><meter min="0" max="5" value="3">3/5</meter><strong>3</strong></div>
+              </div>
+              <p class="experiment-finding"><strong>观察：</strong>执行目标和版式稳定，但模型又发明了“≥12%”“100%”“330 毫升”等数据；Skill 的价值是路由和复核，不是保证第一次生成必然正确。</p>
+              <details><summary>查看这档新增控制</summary><pre>用途分类 + 资产位置 + 精确文字 + 布局坐标 + 不变量 + 禁止项 + 生成后检查顺序</pre></details>
+            </article>
+          </div>
+
+          <div class="experiment-conclusion">
+            <span>结论</span>
+            <p><strong>库最能提高的是“需求完整性和可复查性”。</strong>模板让第一次结果更接近目标；Skill 进一步帮助自动选模板、追问缺失字段和检查失败项。文字与数据仍必须人工复核，失败时应只修改一个变量再生成。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section section-shell" id="apply">
+        <div class="section-intro">
+          <p class="section-number">05 / 理解与应用</p>
+          <h2>别从 517 个案例里盲找，让应用向导替你缩小范围</h2>
+          <p>选择你的目标、最大风险和使用规模，我们会给出一条起步路径。这里的建议来自库的模板结构与已发现的边界，不依赖真实 API。</p>
+        </div>
+
+        <div class="guide-workspace">
+          <div class="guide-controls">
+            <fieldset data-guide-group="goal">
+              <legend><span>1</span>你要产出什么？</legend>
+              <div class="guide-options">
+                <button type="button" data-guide-value="product" aria-pressed="true" class="is-selected">商品视觉</button>
+                <button type="button" data-guide-value="info" aria-pressed="false">信息图</button>
+                <button type="button" data-guide-value="ui" aria-pressed="false">UI 截图</button>
+                <button type="button" data-guide-value="poster" aria-pressed="false">传播海报</button>
+              </div>
+            </fieldset>
+            <fieldset data-guide-group="risk">
+              <legend><span>2</span>最怕哪种失败？</legend>
+              <div class="guide-options">
+                <button type="button" data-guide-value="text" aria-pressed="true" class="is-selected">文字错误</button>
+                <button type="button" data-guide-value="layout" aria-pressed="false">布局混乱</button>
+                <button type="button" data-guide-value="style" aria-pressed="false">风格漂移</button>
+              </div>
+            </fieldset>
+            <fieldset data-guide-group="scale">
+              <legend><span>3</span>准备怎么使用？</legend>
+              <div class="guide-options">
+                <button type="button" data-guide-value="single" aria-pressed="true" class="is-selected">单次尝试</button>
+                <button type="button" data-guide-value="batch" aria-pressed="false">系列批量</button>
+                <button type="button" data-guide-value="agent" aria-pressed="false">Agent 自动化</button>
+              </div>
+            </fieldset>
+          </div>
+
+          <article class="guide-result" id="guideResult" aria-live="polite">
+            <p class="micro-label">YOUR STARTING ROUTE</p>
+            <h3 id="guideTitle">从“商品商业视觉”模板开始</h3>
+            <p id="guideSummary">先锁定包装识别和准确文案，再加入环境与道具。第一次只生成一个明确成品，不要同时要求主图、详情页和包装展开图。</p>
+            <dl>
+              <div><dt>第一动作</dt><dd id="guideAction">写出产品名、3 个卖点、唯一主标题、渠道和画幅。</dd></div>
+              <div><dt>重点约束</dt><dd id="guideConstraint">指定文字必须逐字显示，禁止随机英文、占位文本和改写品牌名。</dd></div>
+              <div><dt>评估方法</dt><dd id="guideMeasure">先检查商品识别和文字，再评价“好不好看”。失败时只修改一个变量。</dd></div>
+            </dl>
+            <div class="agent-starter">
+              <span>可交给 Agent 的起始请求</span>
+              <p id="guidePrompt">使用 gpt-image-2-style-library，为我的商品主图选择模板。先向我确认产品、渠道、文案、画幅和必须避免的错误，再输出自然语言 Prompt 与 JSON 版本。</p>
+              <button type="button" id="copyGuide">复制起始请求</button>
+            </div>
+            <p class="copy-status" id="guideCopyStatus" role="status" aria-live="polite"></p>
+          </article>
+        </div>
+
+        <div class="adoption-grid">
+          <article>
+            <span>LEVEL 1</span><h3>找案例，手动改</h3>
+            <p>适合一次性任务。先复制结构，再替换业务变量；不要只抄风格词。</p>
+            <small>成本最低 · 一致性一般</small>
+          </article>
+          <article>
+            <span>LEVEL 2</span><h3>固定模板，批量变体</h3>
+            <p>适合社媒与电商。固定版式和品牌约束，只变化主体、场景、色板。</p>
+            <small>可复用 · 需要评审规则</small>
+          </article>
+          <article>
+            <span>LEVEL 3</span><h3>Skill + 自动化</h3>
+            <p>适合多类需求。让 Agent 选模板和补字段，再由模型适配器负责调用。</p>
+            <small>可扩展 · 需要测试集</small>
+          </article>
+        </div>
+
+        <div class="truth-section">
+          <div>
+            <p class="micro-label">READ BEFORE APPLYING</p>
+            <h3>四条边界，决定你会不会用错</h3>
+          </div>
+          <ul>
+            <li><strong>模板提高完整性，不提高模型上限。</strong><span>文字准确、人物一致和细节质量仍由底层模型决定。</span></li>
+            <li><strong>好案例不等于稳定复现。</strong><span>案例库有幸存者偏差，正式使用要做多次对照生成。</span></li>
+            <li><strong>MIT 不覆盖所有案例素材。</strong><span>第三方图片与 Prompt 的商业授权需要回到原始来源确认。</span></li>
+            <li><strong>展示能力不等于网站接口能力。</strong><span>研究快照中有 2 条 Prompt 超过在线接口的 6000 字符限制。</span></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-main">
+        <div><span class="brand-mark" aria-hidden="true">A2</span><strong>Awesome GPT Image 2 研究</strong></div>
+        <p>基于固定提交 <code>76fcd0e6</code> 的独立研究展示。页面中的海报为代码化教学预览，不是 GPT‑Image‑2 生成结果。</p>
+      </div>
+      <div class="footer-links">
+        <a href="../">返回研究项目库</a>
+        <a href="https://github.com/freestylefly/awesome-gpt-image-2">上游仓库 ↗</a>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,245 @@
+{
+  "generatedAt": "2026-08-05T08:34:42.445Z",
+  "sourceCommit": "76fcd0e6b3961ef2b041547aac654f1efd1ef270",
+  "summary": {
+    "declaredCases": 517,
+    "actualCases": 517,
+    "idRange": [
+      1,
+      520
+    ],
+    "categories": 13,
+    "styles": 19,
+    "scenes": 10,
+    "templates": 22,
+    "imageFiles": 526
+  },
+  "integrity": {
+    "declaredCountMatches": true,
+    "duplicateCaseIds": [],
+    "duplicateCaseTitles": [
+      {
+        "value": "应用界面样机图",
+        "count": 7
+      },
+      {
+        "value": "电商商品展示设计",
+        "count": 5
+      },
+      {
+        "value": "直播界面设计图",
+        "count": 6
+      },
+      {
+        "value": "封面排版设计图",
+        "count": 3
+      },
+      {
+        "value": "人物角色设定图",
+        "count": 5
+      },
+      {
+        "value": "信息图可视化设计",
+        "count": 27
+      },
+      {
+        "value": "社媒界面截图",
+        "count": 2
+      },
+      {
+        "value": "品牌视觉识别图",
+        "count": 4
+      },
+      {
+        "value": "界面交互设计图",
+        "count": 14
+      },
+      {
+        "value": "写实摄影风格创作",
+        "count": 4
+      },
+      {
+        "value": "主题海报版式设计",
+        "count": 21
+      },
+      {
+        "value": "品牌徽标设计图",
+        "count": 3
+      },
+      {
+        "value": "综合应用场景图",
+        "count": 12
+      },
+      {
+        "value": "绘画艺术风格图",
+        "count": 2
+      },
+      {
+        "value": "建筑空间场景图",
+        "count": 7
+      },
+      {
+        "value": "插画艺术风格创作",
+        "count": 5
+      },
+      {
+        "value": "插画艺术创作图",
+        "count": 6
+      },
+      {
+        "value": "漫画分镜叙事设计",
+        "count": 3
+      },
+      {
+        "value": "动漫插画创作图",
+        "count": 2
+      },
+      {
+        "value": "视频封面界面图",
+        "count": 4
+      },
+      {
+        "value": "关系图谱信息图",
+        "count": 9
+      },
+      {
+        "value": "写实摄影风格图",
+        "count": 4
+      },
+      {
+        "value": "图像生成案例图",
+        "count": 3
+      },
+      {
+        "value": "人像写实摄影图",
+        "count": 3
+      }
+    ],
+    "missingIdsInRange": [
+      12,
+      169,
+      170
+    ],
+    "casesWithoutTitle": [],
+    "casesWithoutPrompt": [],
+    "casesExceedingWebsitePromptLimit": [
+      {
+        "id": 327,
+        "length": 8051
+      },
+      {
+        "id": 218,
+        "length": 6289
+      }
+    ],
+    "casesWithoutSourceUrl": [
+      338,
+      337,
+      336,
+      335,
+      334,
+      333,
+      332,
+      331,
+      330,
+      270,
+      16,
+      15,
+      14,
+      13,
+      11,
+      10,
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      3,
+      2,
+      1
+    ],
+    "casesWithoutImage": [],
+    "casesWithMissingLocalImage": [],
+    "unknownCaseCategories": [],
+    "unknownCaseStyles": [],
+    "unknownCaseScenes": [],
+    "categoryCatalogDrift": {
+      "onlyInCases": [],
+      "onlyInLibrary": []
+    },
+    "styleCatalogDrift": {
+      "onlyInCases": [],
+      "onlyInLibrary": []
+    },
+    "sceneCatalogDrift": {
+      "onlyInCases": [],
+      "onlyInLibrary": []
+    },
+    "duplicateTemplateIds": [],
+    "templatesWithUnknownCategory": [],
+    "templatesWithUnknownStyles": [],
+    "templatesWithUnknownScenes": [],
+    "templatesWithMissingExamples": [],
+    "templatesWithMissingAnchors": [],
+    "templatesWithMissingCovers": []
+  },
+  "distributions": {
+    "categories": {
+      "Posters & Typography": 82,
+      "Photography & Realism": 75,
+      "UI & Interfaces": 73,
+      "Illustration & Art": 56,
+      "Charts & Infographics": 52,
+      "Products & E-commerce": 40,
+      "Other Use Cases": 28,
+      "Brand & Logos": 27,
+      "Characters & People": 26,
+      "Scenes & Storytelling": 20,
+      "History & Classical Themes": 16,
+      "Architecture & Spaces": 12,
+      "Documents & Publishing": 10
+    },
+    "styles": {
+      "UI": 238,
+      "Realistic": 198,
+      "Poster": 183,
+      "Character": 109,
+      "Illustration": 97,
+      "Brand": 78,
+      "Infographic": 74,
+      "Product": 55,
+      "3D": 39,
+      "Classical": 14,
+      "Other Use Cases": 9,
+      "History": 7,
+      "Products": 5,
+      "Architecture": 4,
+      "Documents": 4,
+      "Charts": 3,
+      "Photography": 3,
+      "Characters": 2,
+      "Scenes": 2
+    },
+    "scenes": {
+      "Tech": 382,
+      "Commerce": 359,
+      "Fashion": 110,
+      "Social": 83,
+      "Story": 63,
+      "Creative": 52,
+      "Travel": 44,
+      "Food": 42,
+      "Education": 41,
+      "History": 12
+    },
+    "featured": 26
+  },
+  "promptLengths": {
+    "minimum": 10,
+    "median": 1023,
+    "p95": 3122,
+    "maximum": 8051,
+    "average": 1214
+  }
+}

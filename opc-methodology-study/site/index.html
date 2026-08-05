@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="《一人企业方法论》个人研读与分析台" />
+    <title>OPC 研读台 · 一人企业方法论</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#reading-desk">跳到研读区</a>
+
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="返回 OPC 研读台顶部">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span>
+          <strong>OPC 研读台</strong>
+          <small>个人研究版 · 2026</small>
+        </span>
+      </a>
+      <div class="top-actions">
+        <a class="source-link" href="https://github.com/easychen/opc-methodology" target="_blank" rel="noreferrer">
+          上游仓库 <span aria-hidden="true">↗</span>
+        </a>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="切换主题" title="切换主题">
+          <span aria-hidden="true">◐</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero page-width" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">个人研读 / 书籍结构 / 批判性分析</p>
+          <h1 id="hero-title">不要把它当成<br /><em>创业答案。</em></h1>
+          <p class="hero-intro">
+            这是《一人企业方法论》的个人研究台：把长书、AI Skills 与可质疑的假设放在同一张桌面上，帮助你形成自己的理解，而不是照单全收。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#reading-desk">开始研读 <span aria-hidden="true">↓</span></a>
+            <button class="text-action" type="button" id="random-chapter">随机打开一个章节 <span aria-hidden="true">↗</span></button>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="方法论的四层研究框架">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="hero-card core-card">
+            <span>核心判断</span>
+            <strong>项目不是终点<br />资产才是</strong>
+          </div>
+          <div class="hero-card note-card">
+            <span>阅读方法</span>
+            <strong>理解 · 质疑 · 转化</strong>
+          </div>
+          <span class="visual-number">2.1</span>
+        </div>
+      </section>
+
+      <section class="meta-strip" aria-label="资料概览">
+        <div class="page-width meta-grid">
+          <div><span>书籍模块</span><strong>04</strong></div>
+          <div><span>核心章节</span><strong id="chapter-count">21</strong></div>
+          <div><span>AI Skills</span><strong>09</strong></div>
+          <div><span>上游版本</span><strong>b3d0503</strong></div>
+          <p>资料源已保留在 <code>upstream/opc-methodology</code>；本页面为独立研究性总结。</p>
+        </div>
+      </section>
+
+      <section class="page-width orientation" aria-labelledby="orientation-title">
+        <div class="section-heading narrow">
+          <p class="eyebrow">先建立地图</p>
+          <h2 id="orientation-title">这本书真正试图解决什么？</h2>
+        </div>
+        <div class="orientation-grid">
+          <article class="orientation-card accent-sage">
+            <span class="card-index">01</span>
+            <h3>从出售时间<br />转向持有资产</h3>
+            <p>核心不是“一个人做所有事”，而是让内容、代码、用户与流程在项目结束后仍能继续发挥作用。</p>
+          </article>
+          <article class="orientation-card accent-sand">
+            <span class="card-index">02</span>
+            <h3>从大市场<br />转向小众刚需</h3>
+            <p>个人资源有限，不应该与大公司抢同一条赛道，而应寻找强痛点、可触达的细分入口。</p>
+          </article>
+          <article class="orientation-card accent-blue">
+            <span class="card-index">03</span>
+            <h3>从完整开发<br />转向先验真伪</h3>
+            <p>通过最小实验、预售或众筹，把最大的风险提前暴露，避免半年开发后才发现没有需求。</p>
+          </article>
+          <article class="orientation-card accent-ink">
+            <span class="card-index">04</span>
+            <h3>从单个项目<br />转向组合经营</h3>
+            <p>用共享的用户、内容、支付和自动化能力，让每次尝试都能给下一个项目提供更好的起点。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="page-width study-section" id="reading-desk" aria-labelledby="study-title">
+        <div class="section-heading section-heading-row">
+          <div>
+            <p class="eyebrow">章节研读</p>
+            <h2 id="study-title">把目录变成你的理解路径</h2>
+          </div>
+          <p class="progress-label"><span id="progress-count">0</span> / <span id="progress-total">21</span> 已标记理解</p>
+        </div>
+
+        <div class="study-controls" role="search">
+          <label class="search-field" for="chapter-search">
+            <span aria-hidden="true">⌕</span>
+            <input id="chapter-search" type="search" placeholder="搜索概念、章节或关键词" autocomplete="off" />
+          </label>
+          <div class="filter-group" id="module-filters" aria-label="按模块筛选"></div>
+        </div>
+
+        <div class="study-layout">
+          <aside class="chapter-list-panel" aria-label="章节目录">
+            <div class="list-panel-heading">
+              <span>书籍目录</span>
+              <span id="result-count" aria-live="polite">21 节</span>
+            </div>
+            <div id="chapter-list" class="chapter-list"></div>
+            <div id="empty-state" class="empty-state" hidden>
+              <strong>没有找到匹配章节</strong>
+              <p>试试“资产”“验证”或“基础设施”。</p>
+              <button type="button" class="text-action" id="reset-filters">清除筛选</button>
+            </div>
+          </aside>
+
+          <article class="reader-panel" aria-live="polite">
+            <div class="reader-header">
+              <div>
+                <p class="reader-module" id="reader-module"></p>
+                <h3 id="reader-title"></h3>
+              </div>
+              <button id="mark-read" class="mark-button" type="button" aria-pressed="false"></button>
+            </div>
+            <p class="reader-summary" id="reader-summary"></p>
+            <div class="reader-grid">
+              <section>
+                <p class="micro-label">读这一节，要抓住</p>
+                <ul id="reader-takeaways" class="takeaway-list"></ul>
+              </section>
+              <section class="question-card">
+                <p class="micro-label">带着这个问题读</p>
+                <p id="reader-question"></p>
+              </section>
+            </div>
+            <button class="analysis-toggle" type="button" id="analysis-toggle" aria-expanded="false" aria-controls="deep-analysis">
+              <span>展开研究者分析</span><span aria-hidden="true">↓</span>
+            </button>
+            <section class="deep-analysis" id="deep-analysis" hidden>
+              <div>
+                <p class="micro-label">这节的可迁移洞察</p>
+                <p id="reader-transfer"></p>
+              </div>
+              <div>
+                <p class="micro-label">需要保留的怀疑</p>
+                <p id="reader-caveat"></p>
+              </div>
+            </section>
+            <section class="personal-note">
+              <div>
+                <p class="micro-label">我的理解（仅存储在当前浏览器）</p>
+                <p>把这一节转写成你自己的语言，才算真正开始吸收。</p>
+              </div>
+              <textarea id="personal-note" rows="4" placeholder="例如：我能在哪个研究项目中验证这个想法？"></textarea>
+              <div class="note-footer">
+                <span id="note-status" aria-live="polite">未保存</span>
+                <a id="source-chapter" target="_blank" rel="noreferrer">查看上游原章节 ↗</a>
+              </div>
+            </section>
+          </article>
+        </div>
+      </section>
+
+      <section class="skills-section">
+        <div class="page-width">
+          <div class="section-heading section-heading-row">
+            <div>
+              <p class="eyebrow">方法论的 AI 化版本</p>
+              <h2>Skills 把书变成了什么？</h2>
+            </div>
+            <p class="section-aside">它们是有状态的对话流程，不是自动赚钱机器。</p>
+          </div>
+          <div class="workflow" aria-label="OPC Skills 工作流">
+            <div class="workflow-stage strategy-stage">
+              <span class="stage-label">建盘期</span>
+              <div id="strategy-skills" class="skill-stack"></div>
+            </div>
+            <div class="workflow-arrow" aria-hidden="true">→</div>
+            <div class="workflow-stage execution-stage">
+              <span class="stage-label">实际执行</span>
+              <strong>发布、接触用户、交付、迭代</strong>
+              <p>这部分没有对应 Skill，必须回到真实世界取证。</p>
+            </div>
+            <div class="workflow-arrow" aria-hidden="true">→</div>
+            <div class="workflow-stage loop-stage">
+              <span class="stage-label">运营循环</span>
+              <div id="loop-skills" class="skill-stack"></div>
+            </div>
+          </div>
+          <div class="skill-note">
+            <span aria-hidden="true">!</span>
+            <p>研读重点：Skills 强化了“分阶段、留痕、确认后落盘”的纪律，但其评分和判断仍需要人用真实证据校正。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-width critique-section" aria-labelledby="critique-title">
+        <div class="section-heading narrow">
+          <p class="eyebrow">批判性理解</p>
+          <h2 id="critique-title">哪些值得采用，哪些不能照搬？</h2>
+        </div>
+        <div class="critique-grid">
+          <article class="critique-card good-card">
+            <span class="critique-label">值得带走</span>
+            <h3>把失败项目的中间成果视作资产</h3>
+            <p>这对你的多项目研究库尤其重要：一次调研、模板、提示词、数据整理与工具尝试，都应该能回流到下一项目。</p>
+          </article>
+          <article class="critique-card caution-card">
+            <span class="critique-label">需要质疑</span>
+            <h3>1–5 分的“机会评分”并不等于证据</h3>
+            <p>评分模型没有给出权重、样本量和校准依据。把它当作讨论清单，而不是自动选题器。</p>
+          </article>
+          <article class="critique-card good-card">
+            <span class="critique-label">值得带走</span>
+            <h3>把最大不确定性前置</h3>
+            <p>不论你未来做研究、内容还是产品，都可以先设计一个最小证据，而不是把开发或写作当成验证本身。</p>
+          </article>
+          <article class="critique-card caution-card">
+            <span class="critique-label">需要质疑</span>
+            <h3>“AI 全自动闭环”仍是高风险假设</h3>
+            <p>AI 可以放大工作流，但质量、合规、平台风控和关键关系仍需要人负责；自动化不是免除判断。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="page-width route-section" aria-labelledby="route-title">
+        <div class="route-copy">
+          <p class="eyebrow">把理解带回你的研究库</p>
+          <h2 id="route-title">一条更适合你的轻量路径</h2>
+          <p>先把方法论当作研究纪律，而不是创业压力。每个子项目只需留下问题、假设、最小实验、证据与资产五类记录。</p>
+        </div>
+        <ol class="study-route">
+          <li><span>01</span><strong>记录你已有的资源与约束</strong></li>
+          <li><span>02</span><strong>为一个问题写出可证伪的假设</strong></li>
+          <li><span>03</span><strong>设计最小、最快的验证动作</strong></li>
+          <li><span>04</span><strong>依据真实证据决定继续、调整或停止</strong></li>
+          <li><span>05</span><strong>把一切可复用成果收回研究库</strong></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="page-width footer-inner">
+        <p>OPC 研读台 · 基于 Easy 的《一人企业方法论》进行独立研究性总结。</p>
+        <p>原作品采用 CC BY-NC-SA 4.0；本页面不替代原书阅读，也不复制原书全文。</p>
+      </div>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

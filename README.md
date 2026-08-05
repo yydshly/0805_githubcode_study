@@ -13,6 +13,7 @@
 | [OPC Methodology 研读台](./opc-methodology-study/) | 第 01 个项目 | 面向《OPC Methodology》的章节导读、方法论分析、Skills 梳理与个人学习记录 | [项目说明](./opc-methodology-study/README.md) · [上游资料](https://github.com/easychen/opc-methodology) · [在线研读站](https://yydshly.github.io/0805_githubcode_study/opc-methodology-study/) |
 | [Awesome GPT Image 2 研究](./awesome-gpt-image-2-study/) | 第 02 个项目 · 研究演示 | 拆解案例库、结构化 Prompt、Agent Skill 与在线生图产品，验证其可控性和跨模型迁移价值 | [项目说明](./awesome-gpt-image-2-study/README.md) · [在线研究站](https://yydshly.github.io/0805_githubcode_study/awesome-gpt-image-2-study/) · [上游资料](https://github.com/freestylefly/awesome-gpt-image-2) |
 | [Graphify × pi 架构学习工作台](./graphify-study/) | 第 03 个项目 · 学习报告可用 | 以 Graphify 作为代码图谱导航工具，以 pi 作为目标源码库，研究 Agent 分层、运行循环、状态记忆和自研边界 | [项目说明](./graphify-study/README.md) · [在线学习站](https://yydshly.github.io/0805_githubcode_study/graphify-study/) · [Graphify](https://github.com/Graphify-Labs/graphify) · [pi](https://github.com/earendil-works/pi) |
+| [QuerySplat 待研究记录](./querysplat-study/) | 第 04 个项目 · 待研究 | 记录多视角图片生成 3DGS 的核心原理、视觉几何大模型、环境与许可门槛；当前不下载源码，后期由真实需求触发验证 | [待研究说明](./querysplat-study/README.md) · [上游仓库](https://github.com/inspatio/querysplat) · [论文](https://arxiv.org/abs/2608.01186) |
 
 ## 研究项目约定
 

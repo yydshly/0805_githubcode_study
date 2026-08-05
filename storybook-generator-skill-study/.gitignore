@@ -1,0 +1,4 @@
+upstream/storybook-generator-skill/
+.tmp/
+artifacts/
+

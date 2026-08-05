@@ -33,6 +33,16 @@
       "repositoryDirectory": "graphify-study",
       "upstreamUrl": "https://github.com/Graphify-Labs/graphify",
       "researchTargetUrl": "https://github.com/earendil-works/pi"
+    },
+    {
+      "slug": "storybook-generator-skill-study",
+      "order": 5,
+      "status": "研究样机可用",
+      "title": "Storybook Generator Skill 研究站",
+      "summary": "拆解儿童绘本 Skill 的故事结构、角色圣经、图文契约、逐页生图与 QA，并用交互式模拟器呈现其软一致性能力和模型级边界。",
+      "siteDirectory": "storybook-generator-skill-study/site",
+      "repositoryDirectory": "storybook-generator-skill-study",
+      "upstreamUrl": "https://github.com/weaiw/storybook-generator-skill"
     }
   ]
 }

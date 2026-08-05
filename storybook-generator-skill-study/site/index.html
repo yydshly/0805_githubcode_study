@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Storybook Generator Skill 交互式研究站：理解它如何组织故事、角色一致性、逐页 Prompt、排版与 QA。" />
+    <title>Storybook Generator · 绘本生产实验室</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><strong>Storybook Lab</strong><small>Skill Research · 05</small></span>
+      </a>
+      <nav aria-label="主导航">
+        <a href="#capabilities">能力</a>
+        <a href="#studio">模拟器</a>
+        <a href="#consistency">一致性</a>
+        <a href="#verdict">结论</a>
+      </nav>
+      <a class="header-source" href="https://github.com/weaiw/storybook-generator-skill" target="_blank" rel="noreferrer">查看上游 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span>研究对象：Codex workflow skill</p>
+          <h1>它不负责“画得更像”，<br /><em>它负责让整本书不散。</em></h1>
+          <p class="hero-lede">一套把故事想法编译成绘本生产蓝图的 Agent 工作流：先结构，后生成；先约束，再返工。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#studio">打开流水线模拟器 <span aria-hidden="true">→</span></a>
+            <a class="button button-quiet" href="#consistency">它如何保持一致性</a>
+          </div>
+          <ul class="hero-facts" aria-label="研究摘要">
+            <li><strong>9</strong><span>份专项参考规则</span></li>
+            <li><strong>12</strong><span>页默认内页节奏</span></li>
+            <li><strong>3</strong><span>类视觉锚点</span></li>
+            <li class="warning"><strong>0</strong><span>项模型级身份控制</span></li>
+          </ul>
+        </div>
+
+        <div class="hero-visual" aria-label="绘本工作流示意">
+          <div class="folio folio-back" aria-hidden="true"></div>
+          <article class="folio folio-main">
+            <div class="folio-topline"><span>PROJECT BLUEPRINT</span><span>01 / 12</span></div>
+            <div class="storybook-scene scene-dark" id="heroScene">
+              <span class="scene-star star-a"></span><span class="scene-star star-b"></span><span class="scene-star star-c"></span>
+              <span class="scene-moon"></span>
+              <span class="scene-window"></span>
+              <span class="scene-child" aria-hidden="true"><i></i></span>
+              <span class="scene-lamp"></span>
+              <p id="sceneCaption">豆豆举起小兔灯，第一次认真看向墙上的影子。</p>
+            </div>
+            <div class="folio-meta">
+              <span><b>角色锚点</b>黄色睡衣 · 小兔灯</span>
+              <span><b>图文契约</b>灯 + 手形影子</span>
+            </div>
+          </article>
+          <div class="annotation annotation-a"><b>先固定</b><span>角色圣经</span></div>
+          <div class="annotation annotation-b"><b>再检查</b><span>图文证据</span></div>
+        </div>
+      </section>
+
+      <section class="definition-strip" aria-label="项目定义">
+        <p><span>一句话定义</span>它是“绘本制作导演”，不是新的生图模型。</p>
+        <p><span>核心机制</span>结构化 Prompt + Agent 编排 + 文件化 QA。</p>
+        <p><span>研究价值</span>流程基线高，一致性技术壁垒低。</p>
+      </section>
+
+      <section class="section capabilities" id="capabilities">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span></span>Capability map</p><h2>一条完整的编辑生产链</h2></div>
+          <p>仓库的价值不在单条 Prompt，而在于把九种容易断裂的工作组织成顺序明确、可以检查的产物。</p>
+        </div>
+        <div class="capability-grid">
+          <article class="capability-card card-featured"><span class="card-index">01</span><div class="card-icon">故</div><h3>故事结构</h3><p>把抽象主题转成孩子能看见的动作，并按“状态—触发—行动—钩子”拆页。</p><small>story-structure.md</small></article>
+          <article class="capability-card"><span class="card-index">02</span><div class="card-icon">角</div><h3>角色圣经</h3><p>固定体型、服装、配饰、表情和肢体规则，每页重复关键身份锚点。</p><small>character-continuity.md</small></article>
+          <article class="capability-card"><span class="card-index">03</span><div class="card-icon">契</div><h3>图文契约</h3><p>正文里的可见名词与动作，必须在画面提示词中拥有明确视觉证据。</p><small>story-structure.md</small></article>
+          <article class="capability-card"><span class="card-index">04</span><div class="card-icon">图</div><h3>逐页生图</h3><p>用角色、动作、镜头、材质、负面约束组成稳定的单页 Prompt 模板。</p><small>prompt-workflow.md</small></article>
+          <article class="capability-card"><span class="card-index">05</span><div class="card-icon">字</div><h3>确定性排版</h3><p>插画和正文分层，中文、拼音、英文交给 HTML/PPT/PDF 后期排版。</p><small>layout-and-pinyin.md</small></article>
+          <article class="capability-card card-dark"><span class="card-index">06</span><div class="card-icon">检</div><h3>QA 与局部返工</h3><p>不合格页面保存为 v2/v3，只修故事断点、角色漂移、图文不符或异常肢体。</p><small>qa-checklist.md</small></article>
+        </div>
+      </section>
+
+      <section class="studio-section" id="studio">
+        <div class="section-heading studio-heading">
+          <div><p class="eyebrow light"><span></span>Complete book controller</p><h2>控制生成一本完整绘本</h2></div>
+          <p>从简报开始，生成封面、全部内页、逐页 Prompt、光影 QA 和一致性报告；随后像读一本书一样翻页分析。</p>
+        </div>
+
+        <div class="studio-shell">
+          <form class="brief-panel" id="briefForm">
+            <div class="panel-kicker"><span>01</span><p>输入项目简报<small>STORY BRIEF</small></p></div>
+            <label for="storyIdea">故事概念</label>
+            <textarea id="storyIdea" rows="4">一个怕黑的小女孩，通过检查房间里的影子，学会自己找到光源。</textarea>
+            <div class="sample-row" aria-label="示例主题">
+              <button type="button" class="sample-chip" data-sample="一个怕黑的小女孩，通过检查房间里的影子，学会自己找到光源。">怕黑</button>
+              <button type="button" class="sample-chip" data-sample="一只不爱刷牙的小熊，发现牙齿城堡里住着怕泡泡的小怪兽。">刷牙</button>
+              <button type="button" class="sample-chip" data-sample="第一次去幼儿园的小狐狸，把想念妈妈变成口袋里的三颗勇气豆。">入园</button>
+            </div>
+
+            <div class="field-grid">
+              <label>年龄段<select id="age"><option value="3-5">3—5 岁</option><option value="6-8">6—8 岁</option></select></label>
+              <label>主风格<select id="style"><option value="温暖水彩手绘">温暖水彩</option><option value="纸纹彩铅手绘">纸纹彩铅</option><option value="儿童友好极简怪诞">极简怪诞</option></select></label>
+            </div>
+
+            <fieldset><legend>内页数量</legend><div class="segment-control">
+              <label><input type="radio" name="pages" value="8" checked /><span>8 页</span></label>
+              <label><input type="radio" name="pages" value="12" /><span>12 页</span></label>
+              <label><input type="radio" name="pages" value="16" /><span>16 页</span></label>
+            </div></fieldset>
+            <fieldset><legend>文字版本</legend><div class="segment-control segment-language">
+              <label><input type="radio" name="language" value="中文" checked /><span>中文</span></label>
+              <label><input type="radio" name="language" value="中英双语" /><span>中英</span></label>
+              <label><input type="radio" name="language" value="拼音·中文·英文" /><span>三语</span></label>
+            </div></fieldset>
+
+            <button class="button button-generate" type="submit"><span>生成完整绘本</span><i aria-hidden="true">→</i></button>
+            <p class="form-note"><span aria-hidden="true">ⓘ</span> “怕黑 · 8 页”载入由内置 ImageGen 逐页生成的真实研究样书；其他组合使用明确标注的代码回退，不上传你的输入。</p>
+          </form>
+
+          <section class="output-panel blueprint-panel" aria-labelledby="outputTitle" hidden>
+            <div class="output-topbar">
+              <div><span class="status-dot"></span><p><small>COMPILED BLUEPRINT</small><strong id="outputTitle">《豆豆和墙上的小手》</strong></p></div>
+              <button class="icon-button" type="button" id="resetButton" aria-label="恢复默认示例" title="恢复默认示例">↺</button>
+            </div>
+            <div class="output-summary" id="outputSummary" aria-live="polite">
+              <span>3—5 岁</span><span>12 页</span><span>中文</span><span>温暖水彩手绘</span>
+            </div>
+            <div class="stage-tabs" role="tablist" aria-label="蓝图阶段">
+              <button role="tab" aria-selected="true" aria-controls="stagePanel" data-stage="outline">故事骨架</button>
+              <button role="tab" aria-selected="false" aria-controls="stagePanel" data-stage="bible">角色圣经</button>
+              <button role="tab" aria-selected="false" aria-controls="stagePanel" data-stage="pages">逐页计划</button>
+              <button role="tab" aria-selected="false" aria-controls="stagePanel" data-stage="prompt">生图 Prompt</button>
+              <button role="tab" aria-selected="false" aria-controls="stagePanel" data-stage="qa">QA</button>
+            </div>
+            <div class="stage-panel" id="stagePanel" role="tabpanel" tabindex="0"></div>
+          </section>
+
+          <section class="book-workspace" id="bookWorkspace" aria-labelledby="bookTitle">
+            <div class="generation-progress" id="generationProgress" hidden>
+              <div class="progress-orbit"><span id="progressNumber">01</span><i></i></div>
+              <div><small>BUILDING COMPLETE BOOK</small><strong id="progressLabel">建立故事骨架</strong><div class="progress-track"><i id="progressBar"></i></div><p id="progressDetail">正在把主题变成可见动作……</p></div>
+            </div>
+
+            <div class="workspace-header">
+              <div><span class="status-dot"></span><p><small>COMPLETE STORYBOOK · RESEARCH BUILD</small><strong id="bookTitle">《豆豆和墙上的小手》</strong></p></div>
+              <div class="book-status"><span id="bookRenderMode">ImageGen 实图 · Run 001</span><span id="bookPageTotal">封面 + 8 页</span><b id="bookScoreBadge">一致性 90</b></div>
+            </div>
+
+            <div class="book-and-analysis">
+              <section class="reader-stage" aria-label="绘本阅读器">
+                <article class="book-page" id="bookPage">
+                  <div class="book-art" id="bookArt" aria-label="当前页插画"></div>
+                  <div class="book-copy" id="bookCopy"></div>
+                </article>
+                <div class="reader-controls">
+                  <button type="button" id="prevPage" aria-label="上一页">←</button>
+                  <span id="pageCounter">封面 / 9</span>
+                  <button type="button" id="nextPage" aria-label="下一页">→</button>
+                </div>
+                <div class="book-thumbnails" id="bookThumbnails" aria-label="全书页面"></div>
+              </section>
+
+              <aside class="analysis-desk" aria-label="绘本分析">
+                <div class="analysis-tabs" role="tablist" aria-label="分析模式">
+                  <button role="tab" aria-selected="true" data-analysis-mode="page">当前页</button>
+                  <button role="tab" aria-selected="false" data-analysis-mode="lighting">光影 QA</button>
+                  <button role="tab" aria-selected="false" data-analysis-mode="prompt">Prompt</button>
+                  <button role="tab" aria-selected="false" data-analysis-mode="book">全书一致性</button>
+                </div>
+                <div id="analysisPanel" class="analysis-panel" role="tabpanel" tabindex="0"></div>
+              </aside>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section consistency" id="consistency">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span></span>Consistency audit</p><h2>有一致性，但只有“流程护栏”</h2></div>
+          <p>它通过重复描述和人工 QA 降低漂移，并没有在模型层锁定角色身份。两者必须分开评价。</p>
+        </div>
+        <div class="consistency-stack">
+          <article class="consistency-side soft-side">
+            <div class="side-title"><span>SOFT</span><div><h3>它已经提供</h3><p>工作流级软一致性</p></div><b>可复用</b></div>
+            <ul>
+              <li><span>01</span><div><strong>角色圣经</strong><p>每页重复发型、服装、配饰、比例和表情基调。</p></div></li>
+              <li><span>02</span><div><strong>三类视觉锚点</strong><p>角色、场景和道具只保留少量醒目的固定特征。</p></div></li>
+              <li><span>03</span><div><strong>控制变量返工</strong><p>漂移时减少复杂度，一次只修一个主要变量。</p></div></li>
+              <li><span>04</span><div><strong>前 3 页校准</strong><p>稳定后再批量继续，不把错误扩散到整本书。</p></div></li>
+            </ul>
+          </article>
+          <div class="consistency-axis" aria-hidden="true"><span>流程约束</span><i></i><b>≠</b><i></i><span>身份锁定</span></div>
+          <article class="consistency-side hard-side">
+            <div class="side-title"><span>HARD</span><div><h3>它尚未提供</h3><p>模型级强一致性</p></div><b>研究空间</b></div>
+            <ul>
+              <li><span>01</span><div><strong>参考图注入</strong><p>没有要求每页强制回传同一角色参考资产。</p></div></li>
+              <li><span>02</span><div><strong>身份与姿态控制</strong><p>没有 LoRA、IP-Adapter、ControlNet 或固定 latent。</p></div></li>
+              <li><span>03</span><div><strong>自动相似度评分</strong><p>没有人脸、服装、配色和道具的程序化比对。</p></div></li>
+              <li><span>04</span><div><strong>失败自动重试</strong><p>没有基于分数阈值的自动改写 Prompt 与重生成闭环。</p></div></li>
+            </ul>
+          </article>
+        </div>
+        <div class="research-opportunity">
+          <span class="opportunity-number">R / 01</span>
+          <div><p>值得继续研究的方向</p><h3>把“看起来差不多”升级成“可测量、可自动修复”。</h3></div>
+          <div class="opportunity-flow"><span>参考资产</span><i>→</i><span>特征抽取</span><i>→</i><span>跨页评分</span><i>→</i><span>自动返工</span></div>
+        </div>
+      </section>
+
+      <section class="section verdict" id="verdict">
+        <div class="verdict-card">
+          <div class="verdict-copy"><p class="eyebrow light"><span></span>Research verdict</p><h2>适合做流程基线，<br />不适合做技术终点。</h2><p>我们应保留它的故事结构、角色圣经、图文契约、阶段性校准和局部返工；竞争力则来自参考资产管理、跨页视觉评分和自动修复。</p></div>
+          <div class="scorecard">
+            <div><span>绘本工作流</span><b>9.0</b><i><em style="width:90%"></em></i></div>
+            <div><span>Skill 设计参考</span><b>8.5</b><i><em style="width:85%"></em></i></div>
+            <div><span>软一致性</span><b>6.0</b><i><em style="width:60%"></em></i></div>
+            <div><span>模型级创新</span><b>2.0</b><i><em style="width:20%"></em></i></div>
+          </div>
+        </div>
+
+        <div class="source-grid">
+          <div class="source-intro"><span>SOURCE MAP</span><h3>结论从哪里来</h3><p>本站不复制上游全文，只把关键判断链接回对应原始规则。</p></div>
+          <a href="https://github.com/weaiw/storybook-generator-skill/blob/main/SKILL.md" target="_blank" rel="noreferrer"><span>总工作流</span><strong>SKILL.md</strong><i>↗</i></a>
+          <a href="https://github.com/weaiw/storybook-generator-skill/blob/main/references/story-structure.md" target="_blank" rel="noreferrer"><span>故事与图文契约</span><strong>story-structure.md</strong><i>↗</i></a>
+          <a href="https://github.com/weaiw/storybook-generator-skill/blob/main/references/character-continuity.md" target="_blank" rel="noreferrer"><span>角色一致性</span><strong>character-continuity.md</strong><i>↗</i></a>
+          <a href="https://github.com/weaiw/storybook-generator-skill/blob/main/references/prompt-workflow.md" target="_blank" rel="noreferrer"><span>逐页生成</span><strong>prompt-workflow.md</strong><i>↗</i></a>
+          <a href="https://github.com/weaiw/storybook-generator-skill/blob/main/references/qa-checklist.md" target="_blank" rel="noreferrer"><span>质量检查</span><strong>qa-checklist.md</strong><i>↗</i></a>
+        </div>
+      </section>
+    </main>
+
+    <footer><div><strong>Storybook Generator Skill Study</strong><span>固定上游提交：72d30ec · 研究项目 05</span></div><p>Research interface by 0805 GitHub Code Study</p></footer>
+    <script src="./app.js"></script>
+    <script src="./book-controller.js"></script>
+  </body>
+</html>

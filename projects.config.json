@@ -53,6 +53,16 @@
       "siteDirectory": "i-have-adhd-skill-study/site",
       "repositoryDirectory": "i-have-adhd-skill-study",
       "upstreamUrl": "https://github.com/ayghri/i-have-adhd"
+    },
+    {
+      "slug": "the-long-silence-demo",
+      "order": 11,
+      "status": "阶段研究已归档",
+      "title": "The Long Silence · First Canto 研究 Demo",
+      "summary": "评估开源太空游戏的直接产品价值，提炼飞船内外资产、确定性宇宙、任务反馈与叙事驱动，并用 First Canto 1/7 可玩切片验证；保留可迁移素材和方法，暂不继续复刻完整游戏。",
+      "siteDirectory": "the-long-silence-demo/site",
+      "repositoryDirectory": "the-long-silence-demo",
+      "upstreamUrl": "https://github.com/achimala/TheLongSilence"
     }
   ]
 }

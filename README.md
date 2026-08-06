@@ -19,6 +19,7 @@
 | [Agent 视频剪辑 Skills 暂不研究记录](./agent-video-editing-skills-record/) | 第 07 个项目 · 暂不研究 | 记录 freecut 与 YH ChatCut Video Skills 的链接、转写驱动剪辑原理、执行载体差异及重新研究条件；当前无持续视频生产需求，不下载、不安装、不制作展示站 | [记录说明](./agent-video-editing-skills-record/README.md) · [freecut](https://github.com/Moh4696/freecut) · [YH ChatCut Video Skills](https://github.com/yihui-dev/yh-chatcut-skills) |
 | [LongCat-Video 暂不研究记录](./longcat-video-study/) | 第 08 个项目 · 暂不研究 | 记录美团开放视频生成模型的文生视频、图生视频、视频续写、长视频与 Avatar 1.5 数字人能力；当前受真实需求和 8GB 显存限制，不下载权重，后续视频制作时按需云端验证 | [记录说明](./longcat-video-study/README.md) · [上游仓库](https://github.com/meituan-longcat/LongCat-Video) · [基础模型](https://huggingface.co/meituan-longcat/LongCat-Video) · [Avatar 1.5](https://huggingface.co/meituan-longcat/LongCat-Video-Avatar-1.5) |
 | [Superlog 暂不研究记录](./superlog-study/) | 第 09 个项目 · 暂不研究 | 总结其通过 OpenTelemetry、日志、网络和平台接口采集运行证据，再归类为 Issue/Incident 并为人或 AI 提供排障上下文的原理；当前无生产可观测性需求，不引入、不部署 | [记录说明](./superlog-study/README.md) · [上游仓库](https://github.com/superloglabs/superlog) |
+| [The Long Silence · First Canto 研究 Demo](./the-long-silence-demo/) | 第 11 个项目 · 暂时归档 | 评估开源太空游戏的直接产品价值，提炼飞船内外资产、确定性宇宙、任务反馈与叙事驱动，并用 First Canto 1/7 可玩切片验证；结论是保留素材和方法，不继续复刻完整游戏 | [项目说明](./the-long-silence-demo/README.md) · [在线演示](https://yydshly.github.io/0805_githubcode_study/the-long-silence-demo/) · [阶段归档](./the-long-silence-demo/research/archive/2026-08-06-first-canto.md) · [上游仓库](https://github.com/achimala/TheLongSilence) |
 
 ## 研究项目约定
 

@@ -2,6 +2,8 @@
 
 这是对 [achimala/TheLongSilence](https://github.com/achimala/TheLongSilence) 的能力提炼，不是整套游戏复刻。Demo 把上游最有迁移价值的生成、尺度、飞船语言、内外空间呼应与可观测性，整理成一个可操作、可比较的浏览器场景。
 
+[打开在线演示](https://yydshly.github.io/0805_githubcode_study/the-long-silence-demo/) · [查看阶段研究归档](./research/archive/2026-08-06-first-canto.md)
+
 ## 当前研究状态
 
 本阶段已于 **2026-08-06 暂时归档**。当前结论、已接入范围、验证证据、明确边界和下次恢复入口，统一整理在 [阶段归档：First Canto 垂直切片](./research/archive/2026-08-06-first-canto.md)；研究文档导航见 [research/README.md](./research/README.md)。现有 Demo 保持可运行，不再进行无明确研究问题的功能扩张。

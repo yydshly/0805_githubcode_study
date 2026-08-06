@@ -17,6 +17,7 @@
 | [Storybook Generator Skill 研究站](./storybook-generator-skill-study/) | 第 05 个项目 · 研究样机可用 | 拆解儿童绘本 Skill 的故事结构、角色圣经、图文契约、逐页生图与 QA，并用交互式模拟器呈现软一致性能力和模型级边界 | [项目说明](./storybook-generator-skill-study/README.md) · [在线研究站](https://yydshly.github.io/0805_githubcode_study/storybook-generator-skill-study/) · [上游资料](https://github.com/weaiw/storybook-generator-skill) |
 | [i-have-adhd Skill 回答编排研究站](./i-have-adhd-skill-study/) | 第 06 个项目 · 暂时归档 | 已完成作用、原理、Token 和参考价值研究；结论是现代模型与成熟 Agent 通常已隐含这些能力，完整 Skill 的增量意义有限。保留展示页与中文翻译作为 Skill 写法案例 | [项目说明](./i-have-adhd-skill-study/README.md) · [在线研究站](https://yydshly.github.io/0805_githubcode_study/i-have-adhd-skill-study/) · [上游资料](https://github.com/ayghri/i-have-adhd) |
 | [Agent 视频剪辑 Skills 暂不研究记录](./agent-video-editing-skills-record/) | 第 07 个项目 · 暂不研究 | 记录 freecut 与 YH ChatCut Video Skills 的链接、转写驱动剪辑原理、执行载体差异及重新研究条件；当前无持续视频生产需求，不下载、不安装、不制作展示站 | [记录说明](./agent-video-editing-skills-record/README.md) · [freecut](https://github.com/Moh4696/freecut) · [YH ChatCut Video Skills](https://github.com/yihui-dev/yh-chatcut-skills) |
+| [LongCat-Video 暂不研究记录](./longcat-video-study/) | 第 08 个项目 · 暂不研究 | 记录美团开放视频生成模型的文生视频、图生视频、视频续写、长视频与 Avatar 1.5 数字人能力；当前受真实需求和 8GB 显存限制，不下载权重，后续视频制作时按需云端验证 | [记录说明](./longcat-video-study/README.md) · [上游仓库](https://github.com/meituan-longcat/LongCat-Video) · [基础模型](https://huggingface.co/meituan-longcat/LongCat-Video) · [Avatar 1.5](https://huggingface.co/meituan-longcat/LongCat-Video-Avatar-1.5) |
 
 ## 研究项目约定
 

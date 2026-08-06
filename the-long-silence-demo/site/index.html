@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07111d" />
+    <meta name="description" content="The Long Silence 的第一段 Canto 叙事 Demo：驾驶 Pale Seeker 调查九百个世界为何沉默，定位并调谐第一台共鸣器。" />
+    <title>The Long Silence · The First Canto</title>
+    <script type="module" crossorigin src="./assets/index-D368tsPV.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B1CkcR6g.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="stage-shell" aria-label="程序化太空调查场景">
+        <canvas id="scene" tabindex="0" aria-label="可驾驶飞船、切换外部与驾驶舱视角的交互场景"></canvas>
+        <div class="stage-grid" aria-hidden="true"></div>
+        <div class="stage-vignette" aria-hidden="true"></div>
+        <div id="cockpitHud" class="cockpit-hud" aria-hidden="true">
+          <i class="hud-bracket hud-bracket-left"></i>
+          <i class="hud-bracket hud-bracket-right"></i>
+          <i class="hud-sweep"></i>
+          <span>OPTICAL NAV / TARGET LOCK</span>
+        </div>
+
+        <div class="flight-hud" aria-label="飞行任务状态">
+          <div class="flight-readouts">
+            <span><small>SPEED</small><strong id="flightSpeed">0.00 u/s</strong></span>
+            <span><small>RANGE</small><strong id="flightDistance">-- u</strong></span>
+            <span><small>SCAN</small><strong id="scanGate">TOO FAR</strong></span>
+          </div>
+          <p id="missionPrompt" aria-live="polite">目标 1/2 · 接近寂静世界，寻找消失的证据</p>
+        </div>
+
+        <div class="touch-flight-controls" role="group" aria-label="飞船触控驾驶">
+          <button type="button" data-flight-control="left" aria-label="向左转向">↶<small>左转</small></button>
+          <button class="is-thrust" type="button" data-flight-control="thrust" aria-label="向前推进">▲<small>推进</small></button>
+          <button class="is-brake" type="button" data-flight-control="brake" aria-label="制动">■<small>制动</small></button>
+          <button type="button" data-flight-control="reverse" aria-label="向后推进">▼<small>后退</small></button>
+          <button type="button" data-flight-control="right" aria-label="向右转向">↷<small>右转</small></button>
+        </div>
+
+        <div class="stage-topline">
+          <div>
+            <span class="eyebrow">THE LONG SILENCE · FIRST CANTO</span>
+            <h1>九百个世界沉默了四万年。今天，第一台共鸣器仍在等待。</h1>
+          </div>
+          <span id="modeBadge" class="mode-badge">EXTERIOR CRUISE</span>
+        </div>
+
+        <div class="view-switch" role="group" aria-label="观察视角">
+          <button class="view-button is-active" type="button" data-view="external" aria-pressed="true">
+            <span>01</span> 外部巡航
+          </button>
+          <button class="view-button" type="button" data-view="cockpit" aria-pressed="false">
+            <span>02</span> 内部驾驶舱
+          </button>
+        </div>
+
+        <div id="targetMarker" class="target-marker" aria-label="当前扫描目标">
+          <span class="target-corner"></span>
+          <span id="targetName" class="target-name">ITHIRKA II</span>
+          <span id="targetDistance" class="target-distance">-- u</span>
+          <div id="targetTelemetry" class="target-telemetry" role="status" aria-live="polite" aria-hidden="true">
+            <span><small id="telemetryLabelA">SURFACE</small><b id="tempValue">-- K</b></span>
+            <span><small id="telemetryLabelB">GRAVITY</small><b id="gravityValue">-- g</b></span>
+            <span><small id="telemetryLabelC">ATM</small><b id="atmosphereValue">UNKNOWN</b></span>
+          </div>
+        </div>
+
+        <div class="ship-principles" aria-label="飞船表现的四个设计原则">
+          <button class="principle-button is-active" type="button" data-principle="silhouette" aria-pressed="true">轮廓优先</button><i></i>
+          <button class="principle-button" type="button" data-principle="material" aria-pressed="false">材料分工</button><i></i>
+          <button class="principle-button" type="button" data-principle="habitat" aria-pressed="false">居住证据</button><i></i>
+          <button class="principle-button" type="button" data-principle="feedback" aria-pressed="false">可观测反馈</button>
+        </div>
+
+        <div class="stage-footer">
+          <div class="scene-caption">
+            <span class="caption-kicker">当前任务</span>
+            <strong id="sceneCaption">Pale Seeker 已进入沉默区：接近 ITHIRKA II 并寻找异常证据</strong>
+          </div>
+          <div class="input-hint">W/S 推进 · A/D 转向 · Space 制动 · V 切换视角</div>
+        </div>
+
+        <div id="fallback" class="webgl-fallback hidden" role="alert">
+          <div class="fallback-schematic" aria-hidden="true">
+            <i class="fallback-spine"></i><i class="fallback-head"></i><i class="fallback-wing"></i><i class="fallback-engine one"></i><i class="fallback-engine two"></i>
+          </div>
+          <span class="eyebrow">READABLE FALLBACK</span>
+          <strong>3D 增强模式未启动</strong>
+          <p id="fallbackReason">当前浏览器没有启用 WebGL2。研究说明、来源与后续路线仍可阅读；3D 专用操作已经安全停用。</p>
+          <button id="fallbackRetry" class="button button-secondary" type="button">重新检测 3D</button>
+        </div>
+      </section>
+
+      <aside class="sidebar" aria-label="Demo 控制、能力说明与后续路线">
+        <header class="sidebar-header">
+          <div>
+            <span class="eyebrow">REFERENCE EXTRACTION</span>
+            <h2>把“好看”拆成可复用的方法</h2>
+          </div>
+          <span class="status-dot" aria-label="本地 Demo 运行中"></span>
+        </header>
+
+        <section class="panel intro-panel">
+          <p class="lede">原库最值得参考的不是完整游戏，而是让一个谜题持续推动探索：四万年前，九百个世界在四天内沉默，却没有留下战争与灾难的痕迹。</p>
+          <div class="tag-row">
+            <span class="tag">seeded world</span>
+            <span class="tag">ship language</span>
+            <span class="tag">relative origin</span>
+            <span class="tag">layered orbits</span>
+            <span class="tag">first canto</span>
+            <span class="tag">observable</span>
+          </div>
+        </section>
+
+        <section id="storyPanel" class="panel story-panel" aria-labelledby="storyTitle">
+          <div class="story-heading">
+            <div>
+              <span class="eyebrow">MISSION BRIEFING</span>
+              <h3 id="storyTitle">追查四万年的沉默</h3>
+            </div>
+            <strong id="storyProgress" class="story-progress" aria-live="polite">RESONATORS 0/7</strong>
+          </div>
+          <p id="storyBody" class="story-body" aria-live="polite">你是第 1101 次远征。驾驶 Pale Seeker 进入沉默区，扫描 ITHIRKA II，寻找第一台仍在等待的共鸣器。</p>
+          <div class="story-beats" aria-label="当前叙事进度">
+            <span class="story-beat is-active" data-story-beat="world"><b>01</b> 扫描世界</span>
+            <span class="story-beat" data-story-beat="resonator"><b>02</b> 定位共鸣</span>
+            <span class="story-beat" data-story-beat="canto"><b>03</b> 解读 Canto</span>
+          </div>
+          <div id="storyReward" class="story-reward" aria-live="polite">
+            <span id="storyRewardLabel">THE FIRST CANTO · LOCKED</span>
+            <p id="storyRewardBody">扫描世界，找出沉默背后的第一段声音。</p>
+          </div>
+        </section>
+
+        <section class="panel control-panel" aria-labelledby="control-title">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">操作层</span>
+              <h3 id="control-title">运行一遍连续调查闭环</h3>
+            </div>
+            <span id="runState" class="state-label" aria-live="polite">LIVE</span>
+          </div>
+
+          <div class="tour-control">
+            <button id="tourButton" class="tour-button" type="button" aria-pressed="false" aria-describedby="tourStep">
+              <span class="tour-play" aria-hidden="true">▶</span>
+              <span class="tour-copy">
+                <strong id="tourButtonLabel">播放 20 秒导览</strong>
+                <small id="tourStep" aria-live="polite">轮廓 → 材料 → 驾驶舱 → 扫描 → 相对原点</small>
+              </span>
+              <span id="tourTime" class="tour-time">00:20</span>
+            </button>
+            <div class="tour-progress" role="progressbar" aria-label="导览进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <i id="tourFill"></i>
+            </div>
+          </div>
+
+          <div class="flight-console" aria-label="驾驶任务">
+            <div class="flight-console-head">
+              <span>驾驶任务</span>
+              <strong id="missionState">APPROACH</strong>
+            </div>
+            <p id="missionDetail">朝目标推进；进入 2.65u 扫描距离后，把速度降到 0.30u/s 以下。</p>
+            <div class="control-legend" aria-label="键盘操作">
+              <span><kbd>W</kbd><kbd>S</kbd> 推进 / 后退</span>
+              <span><kbd>A</kbd><kbd>D</kbd> 转向</span>
+              <span><kbd>Space</kbd> 制动</span>
+            </div>
+            <button id="cameraResetButton" class="button button-secondary camera-reset" type="button">重置飞行取景</button>
+          </div>
+
+          <div class="asset-compare" aria-labelledby="asset-title">
+            <div class="asset-compare-head">
+              <span id="asset-title">资产保真度</span>
+              <span id="assetState" class="asset-state" aria-live="polite">L1/L2 · READY</span>
+            </div>
+            <div class="asset-switch" role="group" aria-label="飞船资产版本">
+              <button class="asset-button is-active" type="button" data-asset-mode="study" aria-pressed="true">
+                <strong>轻量提炼</strong><small>默认 · 程序化概念</small>
+              </button>
+              <button class="asset-button" type="button" data-asset-mode="source" aria-pressed="false">
+                <strong>源库高保真</strong><small>按需 · 3.79 MiB 内舱</small>
+              </button>
+            </div>
+            <div id="assetLoadProgress" class="asset-load-progress hidden" role="progressbar" aria-label="高保真资产加载进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="asset-progress-meta"><span id="assetProgressLabel">准备加载</span><strong id="assetProgressValue">0%</strong></div>
+              <div class="asset-progress-track"><i id="assetProgressFill"></i></div>
+            </div>
+            <p id="assetHelp" class="asset-help">当前只表达轮廓和交互规则；切换后载入源库真实船体、Draco 内舱与烘焙纹理。</p>
+
+            <div class="quality-control">
+              <div class="quality-head"><span>渲染预算</span><span id="qualityState" class="quality-state" aria-live="polite">AUTO · DETAIL</span></div>
+              <div class="quality-switch" role="group" aria-label="渲染画质">
+                <button class="quality-button is-active" type="button" data-quality-mode="auto" aria-pressed="true">Auto</button>
+                <button class="quality-button" type="button" data-quality-mode="detail" aria-pressed="false">Detail</button>
+                <button class="quality-button" type="button" data-quality-mode="eco" aria-pressed="false">Eco</button>
+              </div>
+              <p id="qualityHelp" class="quality-help">自动模式先保留细节；持续低于预算时只降低像素密度，不删减扫描反馈或交互。</p>
+              <p id="lodHelp" class="quality-help">几何 LOD：轻量模式不适用；源库高保真会依据镜头距离切换完整船体与远景轮廓。</p>
+            </div>
+          </div>
+
+          <label class="field-label" for="seedInput">宇宙种子</label>
+          <div class="seed-row">
+            <input id="seedInput" inputmode="numeric" value="20260725" aria-describedby="seedHelp" />
+            <button id="regenerateButton" class="button button-secondary" type="button">重生成</button>
+          </div>
+          <p id="seedHelp" class="field-help">同一 seed 会回到同一组恒星、轨道、颜色与目标数据。</p>
+
+          <div class="action-grid">
+            <button id="scanButton" class="button button-primary" type="button">扫描目标</button>
+            <button id="foldButton" class="button button-quiet" type="button">折跃 / 重定位</button>
+            <button id="resetButton" class="button button-quiet" type="button">重置实验</button>
+            <button id="pauseButton" class="button button-quiet" type="button">暂停画面</button>
+          </div>
+
+          <div class="progress-block" aria-live="polite">
+            <div class="progress-meta"><span>SCAN BUFFER</span><strong id="scanValue">0%</strong></div>
+            <div class="progress-track"><i id="scanFill"></i></div>
+          </div>
+        </section>
+
+        <section class="panel lens-panel" aria-labelledby="lens-title">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">参考镜头</span>
+              <h3 id="lens-title">看见效果，也看见依据</h3>
+            </div>
+          </div>
+          <div class="lens-tabs" role="tablist" aria-label="能力说明">
+            <button class="lens-tab is-active" type="button" data-lens="ship" role="tab" aria-selected="true">飞船</button>
+            <button class="lens-tab" type="button" data-lens="generate" role="tab" aria-selected="false">生成</button>
+            <button class="lens-tab" type="button" data-lens="scale" role="tab" aria-selected="false">尺度</button>
+            <button class="lens-tab" type="button" data-lens="measure" role="tab" aria-selected="false">观测</button>
+          </div>
+          <p id="lensBody" class="lens-body">外形用大轮廓区分朝向和功能，内部用框架、控制台和窗外目标证明“这里有人工作”；两者共享同一任务状态。</p>
+          <div id="lensProof" class="proof-line">当前证据：外部 / 驾驶舱双视角 · 同一目标状态</div>
+        </section>
+
+        <section class="panel coverage-panel" aria-labelledby="coverage-title">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">真实覆盖</span>
+              <h3 id="coverage-title">哪些已经接入，哪些还只是解释</h3>
+            </div>
+          </div>
+          <div class="coverage-list">
+            <div class="coverage-row">
+              <span class="coverage-status is-done">已接入</span>
+              <div><strong>确定性生成 · 三维视觉轨道 · 第一段 Canto 任务链 · 扫描反馈 · 几何 LOD</strong><small>首次扫描揭示同 seed 的共鸣器；第二次调谐解锁第一段 Canto，转向、距离与速度真实运行。</small></div>
+            </div>
+            <div class="coverage-row">
+              <span class="coverage-status is-source">按需接入</span>
+              <div><strong>源库船体 · Draco 内舱 · 烘焙材质</strong><small>切换高保真模式后加载；保留 MIT 来源说明。</small></div>
+            </div>
+            <div class="coverage-row">
+              <span class="coverage-status is-concept">概念演示</span>
+              <div><strong>相对原点 · 折跃 · 性能观测</strong><small>因果关系可见，但不是源库完整引擎实现。</small></div>
+            </div>
+            <div class="coverage-row">
+              <span class="coverage-status is-done">工程保障</span>
+              <div><strong>可读 WebGL 降级 · 四场景视觉回归</strong><small>桌面/移动 × 3D/文本模式均有稳定验证入口。</small></div>
+            </div>
+            <div class="coverage-row">
+              <span class="coverage-status is-pending">尚未接入</span>
+              <div><strong>行星烘焙 · 完整后处理 · 六自由度飞行 / 着陆</strong><small>当前只实现单平面最小驾驶；后续仍应按学习价值推进，而不是扩成完整游戏。</small></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel knowledge-panel" aria-labelledby="knowledge-title">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">沉淀笔记</span>
+              <h3 id="knowledge-title">以后再做，可以从这里继续</h3>
+            </div>
+          </div>
+
+          <details open>
+            <summary><span>01</span> 当前是如何生成的</summary>
+            <div class="detail-body">
+              <ol class="pipeline-list">
+                <li><strong>Seed → 数据</strong><small>固定随机数生成恒星、行星、颜色和轨道。</small></li>
+                <li><strong>数据 → 几何</strong><small>Three.js 组合星体、飞船轮廓与驾驶舱构件。</small></li>
+                <li><strong>玩法平面 → 视觉轨道</strong><small>飞船与调查目标保持稳定 XZ 平面；其他轨道按 seed 倾斜，只负责建立三维纵深。</small></li>
+                <li><strong>扫描结果 → 共鸣器</strong><small>首次调查从同一 seed 派生共鸣器的位置和信号，形成有叙事原因、可重复的第二段航程。</small></li>
+                <li><strong>Shader → 表面</strong><small>行星噪声、大气边缘和引擎尾焰由 GPU 实时计算。</small></li>
+                <li><strong>Renderer → 证据</strong><small>帧率、draw calls、三角形和像素比直接取自运行时。</small></li>
+              </ol>
+            </div>
+          </details>
+
+          <details>
+            <summary><span>02</span> 建议怎么操作</summary>
+            <div class="detail-body">
+              <p>先用 <kbd>W</kbd>/<kbd>S</kbd> 推进或后退、<kbd>A</kbd>/<kbd>D</kbd> 转向；进入 2.65u 后按 <kbd>Space</kbd> 制动，速度低于 0.30u/s 时扫描。首次完成后点击“追踪共鸣器”，再按照实时左右角度转向并完成调谐。手机可持续按住舞台上的五个驾驶按钮。</p>
+              <div class="mini-map"><b>扫描寂静世界</b><i>→</i><b>发现共鸣</b><i>→</i><b>转向推进</b><i>→</i><b>解锁 Canto</b></div>
+            </div>
+          </details>
+
+          <details>
+            <summary><span>03</span> 原库真正值得沉淀什么</summary>
+            <div class="detail-body lesson-grid">
+              <div><b>轮廓先于细节</b><small>锤头、散热翼、背鳍、分离引擎远看仍能识别。</small></div>
+              <div><b>材料讲清功能</b><small>压力壳、承力结构、金属连接与发光件不是同一种灰。</small></div>
+              <div><b>内外互相证明</b><small>发光座舱与内部工作空间建立尺度和生活感。</small></div>
+              <div><b>资产替代滤镜</b><small>近景品质最终依赖真实几何、倒角、AO 与可预滤纹理。</small></div>
+              <div><b>结果生成下一步</b><small>首次扫描不是终点：它提供异常证据并揭示共鸣器；第二次行动则用 Canto 回答玩家、建立继续探索的理由。</small></div>
+            </div>
+          </details>
+
+          <details>
+            <summary><span>04</span> 后期应该优化什么</summary>
+            <div class="detail-body roadmap">
+              <div><em>P0 · 已验证</em><p>轻量版与源库船体 / Draco 内舱已能同场对照；下一步不应重复造占位资产。</p></div>
+              <div><em>P1 · 已验证</em><p>第一段 Canto 任务链、实时左右转向提示与叙事奖励已接入；当前切片只覆盖 1/7 共鸣器，不冒充完整战役。</p></div>
+              <div><em>P1 · 下一步</em><p>若继续，先让下一台共鸣器带来不同观察方式与能力变化；不要只复制六次相同扫描，也先不扩展六自由度或着陆。</p></div>
+              <div><em>P2 · 已验证</em><p>按需加载、移动端质量档、船体 LOD、可读 WebGL 降级与四场景视觉回归均已接入。</p></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="panel stats-panel" aria-labelledby="stats-title">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">实时证据</span>
+              <h3 id="stats-title">效果必须能被测量</h3>
+            </div>
+            <button id="statsToggle" class="text-button" type="button" aria-pressed="true">隐藏</button>
+          </div>
+          <div id="statsGrid" class="stats-grid">
+            <div class="stat"><span>FPS</span><strong id="fpsValue">--</strong></div>
+            <div class="stat"><span>DRAWS</span><strong id="drawValue">--</strong></div>
+            <div class="stat"><span>TRIS</span><strong id="triValue">--</strong></div>
+            <div class="stat"><span>PIXEL RATIO</span><strong id="pixelValue">--</strong></div>
+          </div>
+          <div class="readout-list">
+            <div><span>WORLD POSITION</span><strong id="worldValue">+1,240,000 km</strong></div>
+            <div><span>RENDER ORIGIN</span><strong id="originValue">0 km · ship-relative</strong></div>
+            <div><span>SCENE STATE</span><strong id="sceneStateValue">external / live</strong></div>
+            <div><span>ORBIT PLANES</span><strong id="orbitPlanesValue">MISSION 0° · BG --</strong></div>
+            <div><span>ASSET LEVEL</span><strong id="assetLevelValue">L1/L2 · procedural</strong></div>
+            <div><span>GEOMETRY LOD</span><strong id="lodStateValue">STUDY · N/A</strong></div>
+          </div>
+        </section>
+
+        <footer class="sidebar-footer">
+          <span>参考源：The Long Silence · MIT</span>
+          <span>结构性提炼 + 可选源库资产对照</span>
+        </footer>
+      </aside>
+    </main>
+
+  </body>
+</html>

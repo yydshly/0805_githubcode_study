@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="研究小红书 AI 工作台的能力、原理、边界，并用 0805 GitHub Code Study 完成一套实际运营样例。" />
+    <title>小红书 AI 工作台研究站｜0805 GitHub Code Study</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回页面顶部">
+        <span class="brand-mark">10</span>
+        <span><strong>小红书 AI 工作台</strong><small>RESEARCH DESK</small></span>
+      </a>
+      <nav aria-label="页面导航">
+        <a href="#capabilities">能力</a>
+        <a href="#meaning">意义</a>
+        <a href="#demo">策划样例</a>
+        <a href="#verdict">判断</a>
+      </nav>
+      <a class="source-button" href="https://github.com/nihe0909/xiaohongshu-ai-workbench/tree/464ccec036139f0d9bd2b31af9c7b75296f3161a" target="_blank" rel="noreferrer">固定源码 ↗</a>
+    </header>
+
+    <main id="main">
+      <section class="hero section" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow"><span>PROJECT 10</span> · FIXED AT 464CCEC</p>
+          <h1>它给你方法，<br /><em>不给成品。</em></h1>
+          <p class="hero-lede">它把作者的小红书运营方法写成 7 个 Codex 模板，指导 AI 帮你做主页、母题、选题、标题、评论和路径策划。完整正文、图片、发布和数据复盘仍要由你或其他工具完成。</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#meaning">先看它到底交付什么 <span>↓</span></a>
+            <a class="text-link" href="#capabilities">先看 7 个 Skills</a>
+          </div>
+          <ul class="truth-list" aria-label="核心判断">
+            <li><span>上游事实</span>7 个方法模板，27 个规则样例</li>
+            <li><span>对你意义</span>减少策划阶段的随意性，不替你判断是否值得做</li>
+            <li><span>明确缺口</span>没有完整笔记、图片、自动发布和数据复盘</li>
+          </ul>
+        </div>
+
+        <div class="hero-map" aria-label="工作流示意图">
+          <div class="map-caption"><span>PLANNING TEMPLATE SYSTEM</span><b>输入真实材料，输出策划建议</b></div>
+          <div class="map-input">
+            <small>YOUR REAL MATERIAL</small>
+            <strong>产品 · 用户 · 证据 · 目标</strong>
+          </div>
+          <div class="map-line"><i></i><span>ROUTE</span><i></i></div>
+          <div class="map-router">
+            <span>01</span>
+            <div><small>SUITE</small><strong>识别问题，选择最短路径</strong></div>
+          </div>
+          <div class="map-modules">
+            <span>主页</span><span>母题</span><span>日历</span><span>标题</span><span>评论</span><span>路径</span>
+          </div>
+          <div class="map-line danger"><i></i><span>HUMAN GATE</span><i></i></div>
+          <div class="map-output">
+            <div><small>UPSTREAM OUTPUT</small><strong>定位、栏目、标题等策划</strong></div>
+            <b>≠</b>
+            <div><small>PUBLISHABLE RESULT</small><strong>正文、图片、标签与发布</strong></div>
+          </div>
+          <p class="map-note">它不判断小红书值不值得投入，也不完成可直接发布的最终内容。</p>
+        </div>
+      </section>
+
+      <section class="evidence-strip" aria-label="快照证据">
+        <div><strong>7</strong><span>方法模板</span></div>
+        <div><strong>27</strong><span>规则样例</span></div>
+        <div><strong>0</strong><span>完整发布笔记</span></div>
+        <div><strong>0</strong><span>平台执行接口</span></div>
+        <p>价值范围：<b>策划阶段</b><br /><small>方法完整 ≠ 内容成品或效果验证</small></p>
+      </section>
+
+      <section class="section capabilities" id="capabilities">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span>01</span> CAPABILITY MAP</p><h2>七个分工明确的编辑角色</h2></div>
+          <p>点击角色查看输入、判断和产物。总控只负责路由，专业输出交给六个子 Skill；这正是该库避免“大而全提示词”的核心设计。</p>
+        </div>
+        <div class="capability-workspace">
+          <div class="skill-tabs" role="tablist" aria-label="Skill 能力列表" id="skillTabs"></div>
+          <article class="skill-detail" id="skillDetail" role="tabpanel" tabindex="0" aria-live="polite"></article>
+        </div>
+      </section>
+
+      <section class="section mechanism" id="mechanism">
+        <div class="section-heading compact">
+          <div><p class="eyebrow"><span>02</span> HOW IT WORKS</p><h2>方法被写成四层约束</h2></div>
+          <p>它没有训练新模型，而是把运营经验变成模型更容易稳定执行的任务协议。</p>
+        </div>
+        <div class="mechanism-grid">
+          <article><span>TRIGGER</span><b>01</b><h3>先决定谁来处理</h3><p>frontmatter 描述触发场景、输入类型和不该触发的边界。</p></article>
+          <article><span>REASONING</span><b>02</b><h3>再规定判断顺序</h3><p>把“凭经验”拆成诊断维度、步骤、优先级和交接关系。</p></article>
+          <article><span>CONSTRAINT</span><b>03</b><h3>用禁区压住幻觉</h3><p>禁止虚构数据、背书、效果与平台算法结论，保留真实边界。</p></article>
+          <article><span>OUTPUT</span><b>04</b><h3>最后固定交付形状</h3><p>用模板规定数量、字段和结构，减少每次回答的随机漂移。</p></article>
+        </div>
+        <div class="mechanism-note">
+          <p><span>工程事实</span>Python 只打包与校验文件</p>
+          <i>→</i>
+          <p><span>关键缺口</span>没有运行 LLM 质量评测</p>
+          <i>→</i>
+          <p><span>正确用法</span>把结果当编辑初稿复核</p>
+        </div>
+      </section>
+
+      <section class="section meaning" id="meaning">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span>03</span> WHAT IT MEANS FOR YOU</p><h2>它规范你怎么想，<br />不替你把事情做完。</h2></div>
+          <p>它假设你已经决定运营小红书，再提供一套固定策划方法。它不回答“这个渠道值不值得投入”，也没有市场数据来证明投入回报。</p>
+        </div>
+        <div class="meaning-split">
+          <article class="meaning-gives">
+            <div class="meaning-title"><span>它交付</span><strong>策划模板与方法</strong></div>
+            <ul>
+              <li><b>01</b><div><strong>账号表达</strong><p>简介、母题、栏目和置顶建议</p></div></li>
+              <li><b>02</b><div><strong>内容安排</strong><p>7/14/30 天选题与发布顺序</p></div></li>
+              <li><b>03</b><div><strong>局部文案</strong><p>标题候选、评论回复和行动路径</p></div></li>
+              <li><b>04</b><div><strong>AI 约束</strong><p>固定输出格式、禁区和检查清单</p></div></li>
+            </ul>
+          </article>
+          <div class="meaning-divider" aria-hidden="true"><span>STOP</span><i></i></div>
+          <article class="meaning-needs">
+            <div class="meaning-title"><span>你仍要完成</span><strong>内容生产与运营</strong></div>
+            <ul>
+              <li><b>01</b><div><strong>判断渠道价值</strong><p>用户是否在小红书、投入是否划算</p></div></li>
+              <li><b>02</b><div><strong>制作发布成品</strong><p>完整正文、封面、6–9 页图片或视频、标签</p></div></li>
+              <li><b>03</b><div><strong>审核与发布</strong><p>事实、合规、语气检查和账号操作</p></div></li>
+              <li><b>04</b><div><strong>数据闭环</strong><p>曝光、收藏、评论、访问与下一轮调整</p></div></li>
+            </ul>
+          </article>
+        </div>
+        <div class="meaning-verdict"><span>一句话</span><strong>如果你缺策划方法，它有用；如果你要可直接发布的成品，它单独不够。</strong></div>
+      </section>
+
+      <section class="section demo" id="demo">
+        <div class="section-heading demo-heading">
+          <div><p class="eyebrow light"><span>04</span> PLANNING OUTPUT DEMO</p><h2>这是一份策划结果，<br />不是可发布成品。</h2></div>
+          <p>样例使用 0805 GitHub Code Study 的真实信息，完整展示上游能交付的主页、栏目、日历、标题、评论和路径。运行结束后仍没有完整正文与图片。</p>
+        </div>
+
+        <div class="demo-boundary"><span>上游能力终点</span><strong>六段策划输出</strong><i>≠</i><span>直接发布结果</span><strong>正文 + 图片 + 标签 + 发布</strong></div>
+
+        <div class="brief-card">
+          <div class="brief-index"><span>INPUT</span><strong>真实策划材料</strong></div>
+          <dl>
+            <div><dt>产品</dt><dd>0805 GitHub Code Study</dd></div>
+            <div><dt>读者</dt><dd>需要判断 AI 开源项目是否值得用的创作者、开发者与产品人员</dd></div>
+            <div><dt>证据</dt><dd>固定源码、研究结论、边界记录、可操作演示</dd></div>
+            <div><dt>目标</dt><dd>理解 · 收藏 · 体验研究站 · 反馈下一项目</dd></div>
+            <div><dt>边界</dt><dd>不追热点，不编数据，不承诺效果</dd></div>
+          </dl>
+          <button class="run-button" id="runWorkflow" type="button"><span>运行六段策划流程</span><i>▶</i></button>
+        </div>
+
+        <div class="run-status" id="runStatus" aria-live="polite">
+          <div><span id="runState">READY</span><strong id="runLabel">等待运行策划样例</strong></div>
+          <div class="progress-track" aria-hidden="true"><i id="progressBar"></i></div>
+          <small id="runMeta">浏览器只装配已记录的策划结果，不调用外部模型</small>
+        </div>
+
+        <div class="workflow-workspace">
+          <aside class="workflow-nav" aria-label="策划样例步骤">
+            <p>PLANNING RECORD · NOT A POST</p>
+            <div id="workflowTabs" role="tablist" aria-label="六段工作流"></div>
+            <button class="copy-button" id="copyOutput" type="button" disabled>复制当前产物</button>
+          </aside>
+          <article class="workflow-output" id="workflowOutput" role="tabpanel" tabindex="0">
+            <div class="empty-output"><span>00</span><h3>一份原始研究材料</h3><p>点击“运行六段策划流程”，查看它怎样被整理为主页、栏目、日历、标题、评论与行动路径；流程不会继续生成完整笔记和图片。</p></div>
+          </article>
+        </div>
+        <p class="live-message" id="liveMessage" aria-live="polite"></p>
+      </section>
+
+      <section class="section verdict" id="verdict">
+        <div class="verdict-main">
+          <p class="eyebrow light"><span>05</span> RESEARCH VERDICT</p>
+          <h2>策划阶段有用，<br />单独使用不够。</h2>
+          <p>它能帮助已有真实产品的人建立一套稳定的内容策划方法；但对我们真正需要的“研究报告 → 完整笔记 → 图文素材 → 发布 → 数据复盘”只覆盖前半段。更大的参考价值，是展示如何把人的经验封装成 Skills。</p>
+          <a href="https://github.com/yydshly/0805_githubcode_study/blob/main/xiaohongshu-ai-workbench-study/research/actual-sample.md" target="_blank" rel="noreferrer">查看完整样例记录 →</a>
+        </div>
+        <div class="verdict-matrix">
+          <div><span>方法模板</span><strong>强</strong><p>角色、步骤、输出和禁区完整</p></div>
+          <div><span>输出稳定</span><strong>中上</strong><p>模板与禁区明确，仍依赖模型和输入</p></div>
+          <div><span>发布成品</span><strong>无</strong><p>没有完整正文、图片和标签</p></div>
+          <div><span>价值验证</span><strong>无</strong><p>没有市场判断与运营数据闭环</p></div>
+        </div>
+      </section>
+
+      <section class="section adoption">
+        <div class="section-heading compact">
+          <div><p class="eyebrow"><span>06</span> ADOPTION GUIDE</p><h2>只把它放在策划层</h2></div>
+          <p>不把整套仓库误当成生产工具；吸收它的结构，再补我们真正缺少的成品生成和数据闭环。</p>
+        </div>
+        <ol class="adoption-steps">
+          <li><span>保留</span><strong>方法结构</strong><p>触发边界、步骤、输出模板和禁止项值得借鉴。</p></li>
+          <li><span>按需</span><strong>策划四件套</strong><p>主页、母题、日历、标题可作为起步模板。</p></li>
+          <li><span>补齐</span><strong>发布成品层</strong><p>完整正文、图文编排、视觉素材、标签和审核。</p></li>
+          <li><span>最终</span><strong>数据反馈层</strong><p>用真实发布结果决定下一篇，而不是相信通用模板。</p></li>
+        </ol>
+      </section>
+
+      <section class="section sources">
+        <div><p class="eyebrow"><span>07</span> SOURCE MAP</p><h2>每个判断都能回到固定源码</h2><p>本站没有复制外部案例库；策划样例使用我们自己的产品事实。</p></div>
+        <div class="source-links">
+          <a href="https://github.com/nihe0909/xiaohongshu-ai-workbench/blob/464ccec036139f0d9bd2b31af9c7b75296f3161a/xiaohongshu-suite/SKILL.md" target="_blank" rel="noreferrer"><span>路由与顺序</span><strong>suite / SKILL.md</strong><i>↗</i></a>
+          <a href="https://github.com/nihe0909/xiaohongshu-ai-workbench/blob/464ccec036139f0d9bd2b31af9c7b75296f3161a/xiaohongshu-magazine/SKILL.md" target="_blank" rel="noreferrer"><span>母题与栏目</span><strong>magazine / SKILL.md</strong><i>↗</i></a>
+          <a href="https://github.com/nihe0909/xiaohongshu-ai-workbench/blob/464ccec036139f0d9bd2b31af9c7b75296f3161a/xiaohongshu-title/SKILL.md" target="_blank" rel="noreferrer"><span>标题约束</span><strong>title / SKILL.md</strong><i>↗</i></a>
+          <a href="https://github.com/nihe0909/xiaohongshu-ai-workbench/blob/464ccec036139f0d9bd2b31af9c7b75296f3161a/scripts/validate_all.py" target="_blank" rel="noreferrer"><span>工程校验</span><strong>validate_all.py</strong><i>↗</i></a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div><strong>0805 GitHub Code Study · Project 10</strong><span>Source lock 464ccec · 2026-08-06</span></div>
+      <p>研究页不隶属于小红书或上游作者。上游 MIT；本站结论与演示由当前研究项目制作。</p>
+    </footer>
+    <noscript><p class="noscript">JavaScript 已关闭。研究结论仍可阅读，但能力切换和策划样例播放器不可用。</p></noscript>
+    <script src="./app.js"></script>
+  </body>
+</html>

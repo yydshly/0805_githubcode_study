@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/nihe0909/xiaohongshu-ai-workbench",
+  "commit": "464ccec036139f0d9bd2b31af9c7b75296f3161a",
+  "commitDate": "2026-08-04T18:24:55+08:00",
+  "commitMessage": "feat: add xiaohongshu-magazine (杂志感选题库) sub-skill; bump to v0.2.0",
+  "acquiredAt": "2026-08-06",
+  "acquisition": "git clone --depth 1",
+  "localPath": "upstream/xiaohongshu-ai-workbench",
+  "validation": "python scripts/validate_all.py -> OK: all xiaohongshu skills validated"
+}

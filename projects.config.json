@@ -55,6 +55,16 @@
       "upstreamUrl": "https://github.com/ayghri/i-have-adhd"
     },
     {
+      "slug": "xiaohongshu-ai-workbench-study",
+      "order": 10,
+      "status": "策划层演示可用",
+      "title": "小红书 AI 工作台研究站",
+      "summary": "拆解 7 个 Codex Skills 如何把运营方法封装为策划模板；用当前研究库演示主页、母题、日历、标题、评论和路径，并明确它不产出完整笔记、图片、发布或数据复盘。",
+      "siteDirectory": "xiaohongshu-ai-workbench-study/site",
+      "repositoryDirectory": "xiaohongshu-ai-workbench-study",
+      "upstreamUrl": "https://github.com/nihe0909/xiaohongshu-ai-workbench"
+    },
+    {
       "slug": "the-long-silence-demo",
       "order": 11,
       "status": "阶段研究已归档",
